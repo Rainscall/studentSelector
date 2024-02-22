@@ -1,7 +1,10 @@
 "use strict"
 const apiEndpoint = 'https://studentselector-backend.colorspark.net/';
+let selectedCharacter = [];
 
 function init() {
+    selectedCharacter = [];
+    removeElementsByClassName('tempElement');
     infoArea.classList.add('shadowBorder');
     infoArea.innerHTML = '';
     const infoList = [
@@ -88,12 +91,12 @@ function init() {
         base.appendChild(title);
         base.appendChild(value);
         infoArea.appendChild(base);
-
     })();
 
 }
 
 init();
+
 
 async function openCharacterList() {
     infoArea.classList.remove('shadowBorder');
@@ -105,6 +108,7 @@ async function openCharacterList() {
         let icon = document.createElement('div');
         let tip = document.createElement('div');
 
+        base.classList.add('tempElement');
         base.classList.add('fixedBack');
         base.classList.add('shadowBorder');
 
@@ -117,7 +121,7 @@ async function openCharacterList() {
         iconCotainer.appendChild(icon);
         iconCotainer.appendChild(tip);
         base.appendChild(iconCotainer);
-        infoArea.appendChild(base);
+        document.body.prepend(base);
     })()
 
     let blankDiv = document.createElement('div');
@@ -154,22 +158,15 @@ async function openCharacterList() {
         pic.src = Object.values(infoList)[i];
 
         base.addEventListener('click', () => {
-            const textArea = document.createElement('textArea')
-            textArea.value = currentKey;
-            textArea.style.width = 0
-            textArea.style.position = 'fixed'
-            textArea.style.left = '-999px'
-            textArea.style.top = '10px'
-            textArea.setAttribute('readonly', 'readonly')
-            document.body.appendChild(textArea)
-
-            textArea.select()
-            document.execCommand('copy')
-            document.body.removeChild(textArea)
-
-            createToast('已复制角色名称');
+            if (selectedCharacter.includes(currentKey)) {
+                base.classList.remove('selected');
+                selectedCharacter = selectedCharacter.filter(item => item !== currentKey);
+            } else {
+                base.classList.add('selected');
+                selectedCharacter.push(currentKey);
+            }
+            console.log(selectedCharacter);
         })
-
 
         value.appendChild(pic);
         titleContainer.appendChild(title);

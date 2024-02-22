@@ -121,6 +121,11 @@ hr {
     background-color: rgba(241, 241, 241, 0.674);
 }
 
+.characterItem .selected:hover,
+.characterItem .selected {
+    background-color: #dfdfdf !important;
+}
+
 #infoArea .childPart>div {
     max-width: 80%;
     word-break: break-all;
@@ -187,7 +192,7 @@ hr {
     font-weight: lighter;
 }
 
-.characterItem .childPart :nth-child(1) :nth-child(2){
+.characterItem .childPart :nth-child(1) :nth-child(2) {
     color: #949494;
 }
 
@@ -206,7 +211,7 @@ hr {
     padding: 1.4rem;
     position: fixed;
     border-radius: 2rem;
-    margin: 0;
+    margin: 2rem;
     cursor: pointer;
 }
 
@@ -227,6 +232,7 @@ hr {
         color: #cb3c56;
     }
 
+    .characterItem .selected,
     #infoArea .childPart:has(input:valid),
     #infoArea .childPart:hover {
         background-color: rgba(10, 10, 10, 0.674);
