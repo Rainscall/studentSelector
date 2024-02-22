@@ -199,6 +199,7 @@ hr {
 .characterItem .childPart :nth-child(1) :nth-child(1) {
     font-size: larger;
     font-weight: lighter;
+    white-space: wrap;
 }
 
 .characterItem img {
@@ -213,6 +214,70 @@ hr {
     border-radius: 2rem;
     margin: 2rem;
     cursor: pointer;
+    display: flex;
+    user-select: none;
+}
+
+.fixedBack>div {
+    margin-left: 1em;
+}
+
+.fixedBack>div:first-child {
+    margin-left: 0;
+}
+
+.selectedCharacterList {
+    max-width: calc(512px - 24px);
+    width: calc(90vw - 24px);
+    border-radius: 12px;
+    padding: 12px;
+    width: calc(100% - 24px);
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    padding-bottom: 10px;
+    transition: all 0.374s;
+    cursor: pointer;
+    justify-content: center;
+    cursor: auto;
+}
+
+.selectedCharacterList> :last-child>div {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: left;
+    padding: 0.525rem;
+    margin: 0.25rem;
+    width: fit-content;
+    height: fit-content;
+    box-sizing: border-box;
+    background-color: #ececec;
+    border-radius: 2rem;
+    cursor: pointer;
+}
+
+.selectedCharacterList> :nth-child(2) {
+    display: flex;
+    flex-direction: row;
+    width: 100%;
+    box-sizing: border-box;
+    margin-top: 1rem;
+    flex-wrap: wrap;
+}
+
+.selectedCharacterList> :last-child>div :last-child {
+    margin-left: 0.6em;
+}
+
+.selectedCharacterList .img {
+    border-radius: 50%;
+    height: 1.5em;
+    width: 1.5em;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: cover;
 }
 
 @media (prefers-color-scheme: dark) {
