@@ -1,0 +1,238 @@
+* {
+    margin: 0;
+    padding: 0;
+    font-family: 'Josefin Sans';
+    -webkit-tap-highlight-color: transparent;
+    font-family: 'MiSans Medium';
+}
+
+*::-webkit-scrollbar {
+    width: 8px;
+    background-color: transparent;
+}
+
+*::-webkit-scrollbar-thumb {
+    background-color: #b7b7b7;
+    border-radius: 114514rem;
+}
+
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+}
+
+:root {
+    color-scheme: light dark
+}
+
+.maxViewPort {
+    min-height: 100vh;
+    min-height: 100svh;
+    min-height: 100dvh;
+    max-width: 100vw;
+    width: 100%;
+}
+
+.basePart {
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    align-content: center;
+    align-items: center;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+
+#basePart>.childPart {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.childPart {
+    max-width: calc(512px - 24px);
+    width: calc(90vw - 24px);
+    border-radius: 12px;
+    padding: 12px;
+}
+
+.shadowBorder {
+    box-shadow: 0 0px 45px -3px #0000002b;
+}
+
+.slimBorder {
+    border-color: #e1e1e1;
+    border-style: solid;
+    border-width: 1px;
+}
+
+.greyBackground {
+    background-color: rgb(236 236 236 / 84%);
+}
+
+.basePart>:not(:first-child) {
+    margin-top: 8px;
+}
+
+.bbox {
+    box-sizing: border-box;
+}
+
+hr {
+    outline: none;
+    border: none;
+    background-color: #00000018;
+    height: 2px;
+    border-radius: 114514px;
+    margin: 6px 0;
+    width: 100%;
+}
+
+
+#infoArea .childPart {
+    width: calc(100% - 24px);
+    margin: 0;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    padding-bottom: 10px;
+    transition: all 0.374s;
+    cursor: pointer;
+}
+
+#infoArea .childPart div:nth-child(2):has(input) {
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-end;
+}
+
+.childPart form:has(input) {
+    width: 100%;
+}
+
+.childPart form input {
+    width: 100%;
+}
+
+#infoArea .childPart:has(input:valid),
+#infoArea .childPart:hover {
+    background-color: rgba(241, 241, 241, 0.674);
+}
+
+#infoArea .childPart>div {
+    max-width: 80%;
+    word-break: break-all;
+    user-select: none;
+}
+
+#infoArea .childPart>div:first-child {
+    text-transform: capitalize;
+    white-space: nowrap;
+    margin-right: 1em;
+}
+
+#infoArea .childPart>div:nth-child(2) {
+    cursor: pointer;
+}
+
+#infoArea .childPart input {
+    outline: none;
+    border: none;
+    background: none;
+    text-align: right;
+}
+
+.bold {
+    font-weight: 600;
+}
+
+.copyright {
+    margin-top: 1em;
+}
+
+.copyright a {
+    text-decoration: none;
+    color: #840D23;
+}
+
+.iconCotainer {
+    cursor: pointer;
+    display: flex;
+    flex-direction: row;
+}
+
+.iconCotainer :nth-child(2) {
+    margin-left: 0.4rem;
+}
+
+.inlineSvgIcon {
+    transform: translateY(1px);
+    height: 1em;
+    width: 1em;
+    position: relative;
+}
+
+.infoContainer {
+    margin: 2rem 0;
+    padding: 1rem;
+    box-sizing: border-box;
+    border-radius: 1rem;
+}
+
+.characterItem .childPart :nth-child(1) :nth-child(2),
+.infoContainer>.childPart>div:nth-child(2) {
+    font-size: small;
+    font-weight: lighter;
+}
+
+.characterItem .childPart :nth-child(1) :nth-child(2){
+    color: #949494;
+}
+
+.characterItem .childPart :nth-child(1) :nth-child(1) {
+    font-size: larger;
+    font-weight: lighter;
+}
+
+.characterItem img {
+    max-height: 8rem;
+    border-radius: 0.8rem;
+}
+
+.fixedBack {
+    background-color: #fff;
+    padding: 1.4rem;
+    position: fixed;
+    border-radius: 2rem;
+    margin: 0;
+    cursor: pointer;
+}
+
+@media (prefers-color-scheme: dark) {
+    .shadowBorder {
+        box-shadow: 0 0px 45px -3px #fcfcfc1d;
+    }
+
+    hr {
+        background-color: #e1e1e129
+    }
+
+    body {
+        background-color: #181818;
+    }
+
+    .copyright a {
+        color: #cb3c56;
+    }
+
+    #infoArea .childPart:has(input:valid),
+    #infoArea .childPart:hover {
+        background-color: rgba(10, 10, 10, 0.674);
+    }
+
+    .inlineSvgIcon svg path {
+        fill: #fff;
+    }
+}
