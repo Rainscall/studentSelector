@@ -1,5 +1,5 @@
 "use strict"
-const apiEndpoint = 'http://88.151.33.138:3000';
+const apiEndpoint = 'https://studentselector-backend.colorspark.net/';
 
 function init() {
     infoArea.classList.add('shadowBorder');
@@ -7,8 +7,7 @@ function init() {
     const infoList = [
         ['钻石数量', '大于等于...', 'number', 'coins', {
             'step': 1,
-            'min': 1,
-            'onkeydown': `javascript: return ['Backspace','Delete','ArrowLeft','ArrowRight','ArrowUp','ArrowDown','Enter'].includes(event.code) ? true : !isNaN(Number(event.key)) && event.code!=='Space'`
+            'min': 1
         }],
         ['搜索', '关键词', 'text', 'things']
     ];
