@@ -192,14 +192,25 @@ hr {
     font-weight: lighter;
 }
 
+/* 角色卡片小标题 */
 .characterItem .childPart :nth-child(1) :nth-child(2) {
-    color: #949494;
+    color: #606060;
+    background-color: #ffffff94;
+    padding: 0.3em 0.4em;
+    width: fit-content;
+    border-radius: 1rem;
+    margin-top: 0.3rem;
 }
 
+/* 角色卡片大标题 */
 .characterItem .childPart :nth-child(1) :nth-child(1) {
     font-size: larger;
     font-weight: lighter;
     white-space: wrap;
+    background-color: #ffffff94;
+    padding: 0.3em 0.4em;
+    width: fit-content;
+    border-radius: 1rem;
 }
 
 .characterItem img {
@@ -301,10 +312,18 @@ hr {
     .characterItem .selected,
     #infoArea .childPart:has(input:valid),
     #infoArea .childPart:hover {
-        background-color: rgba(10, 10, 10, 0.674);
+        background-color: rgba(10, 10, 10, 0.674) !important;
     }
 
     .inlineSvgIcon svg path {
         fill: #fff;
+    }
+
+    .fixedBack {
+        background-color: #000;
+    }
+
+    .characterItem .childPart :nth-child(1) :nth-child(1) {
+        color: #000;
     }
 }

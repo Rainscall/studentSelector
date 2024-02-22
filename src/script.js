@@ -52,12 +52,12 @@ function init() {
                 return;
             }
 
-            createToast('加载中...', -1, '#FFF', '#414141', 'temp-search-loadingToast');
+            createToast('正在查询', -1, '#FFF', '#414141', 'temp-search-loadingToast');
 
             doSearch(query, infoList[i][3])
                 .then(r => {
                     if (r == 'NOT FOUND') {
-                        createToast('未找到符合条件的角色', 4300, '#FFF', '#840D23');
+                        createToast('未找到符合条件的项目', 4300, '#FFF', '#840D23');
                         input.value = '';
                     }
                 })
@@ -79,9 +79,9 @@ function init() {
         let value = document.createElement('div');
         base.classList.add('childPart');
         value.classList.add('inlineSvgIcon');
-        title.innerText = '查看角色列表';
+        title.innerText = '角色列表';
         value.style.transform = 'translateY(-1px)';
-        value.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--!Font Awesome Free 6.5.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2024 Fonticons, Inc.--><path d="M352 0c-12.9 0-24.6 7.8-29.6 19.8s-2.2 25.7 6.9 34.9L370.7 96 201.4 265.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L416 141.3l41.4 41.4c9.2 9.2 22.9 11.9 34.9 6.9s19.8-16.6 19.8-29.6V32c0-17.7-14.3-32-32-32H352zM80 32C35.8 32 0 67.8 0 112V432c0 44.2 35.8 80 80 80H400c44.2 0 80-35.8 80-80V320c0-17.7-14.3-32-32-32s-32 14.3-32 32V432c0 8.8-7.2 16-16 16H80c-8.8 0-16-7.2-16-16V112c0-8.8 7.2-16 16-16H192c17.7 0 32-14.3 32-32s-14.3-32-32-32H80z"/></svg>'
+        value.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--!Font Awesome Free 6.5.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2024 Fonticons, Inc.--><path d="M384 32c35.3 0 64 28.7 64 64V416c0 35.3-28.7 64-64 64H64c-35.3 0-64-28.7-64-64V96C0 60.7 28.7 32 64 32H384zM160 144c-13.3 0-24 10.7-24 24s10.7 24 24 24h94.1L119 327c-9.4 9.4-9.4 24.6 0 33.9s24.6 9.4 33.9 0l135-135V328c0 13.3 10.7 24 24 24s24-10.7 24-24V168c0-13.3-10.7-24-24-24H160z"/></svg>';
 
         base.addEventListener('click', () => {
             openCharacterList();
@@ -215,6 +215,11 @@ async function openCharacterList() {
         value.dataset.value = Object.values(infoList)[i];
         pic.src = Object.values(infoList)[i];
 
+        pic.addEventListener('load', () => {
+            let rgbcolor = getAverageRGB(pic);
+            base.parentNode.style.backgroundColor = `rgb(${rgbcolor.r},${rgbcolor.g},${rgbcolor.b})`;
+        })
+
         base.addEventListener('click', () => {
             if (selectedCharacter.includes(currentKey)) {
                 base.classList.remove('selected');
@@ -228,7 +233,9 @@ async function openCharacterList() {
 
         value.appendChild(pic);
         titleContainer.appendChild(title);
-        titleContainer.appendChild(subtitle);
+        if (subtitle.innerText) {
+            titleContainer.appendChild(subtitle);
+        }
         base.appendChild(titleContainer);
         base.appendChild(value);
         container.appendChild(base);
@@ -276,7 +283,7 @@ async function writeInfo(r) {
             const displayKey = {
                 'id': '编号',
                 'coins': '钻石',
-                'things': '英雄'
+                'things': '角色'
             }
             let base = document.createElement('div');
             let title = document.createElement('div');
@@ -400,6 +407,65 @@ function backToTop() {
     infoArea.children[0].scrollIntoView({
         behavior: "smooth"
     });
+}
+
+function getAverageRGB(imgEl) {
+
+    var blockSize = 5,
+        // only visit every 5 pixels
+        defaultRGB = {
+            r: 0,
+            g: 0,
+            b: 0
+        },
+        // for non-supporting envs
+        canvas = document.createElement('canvas'),
+        context = canvas.getContext && canvas.getContext('2d'),
+        data,
+        width,
+        height,
+        i = -4,
+        length,
+        rgb = {
+            r: 0,
+            g: 0,
+            b: 0
+        },
+        count = 0;
+
+    if (!context) {
+        return defaultRGB;
+    }
+
+    height = canvas.height = imgEl.naturalHeight || imgEl.offsetHeight || imgEl.height;
+    width = canvas.width = imgEl.naturalWidth || imgEl.offsetWidth || imgEl.width;
+
+    context.drawImage(imgEl, 0, 0);
+
+    try {
+        data = context.getImageData(0, 0, width, height);
+    } catch (e) {
+        /* security error, img on diff domain */
+        alert('x');
+        return defaultRGB;
+    }
+
+    length = data.data.length;
+
+    while ((i += blockSize * 4) < length) {
+        ++count;
+        rgb.r += data.data[i];
+        rgb.g += data.data[i + 1];
+        rgb.b += data.data[i + 2];
+    }
+
+    // ~~ used to floor values
+    rgb.r = ~~(rgb.r / count);
+    rgb.g = ~~(rgb.g / count);
+    rgb.b = ~~(rgb.b / count);
+
+    return rgb;
+
 }
 
 const picList = {
