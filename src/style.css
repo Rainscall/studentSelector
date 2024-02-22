@@ -241,6 +241,7 @@ hr {
     cursor: pointer;
     justify-content: center;
     cursor: auto;
+    user-select: none;
 }
 
 .selectedCharacterList> :last-child>div {
