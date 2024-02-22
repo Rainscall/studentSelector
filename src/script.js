@@ -112,7 +112,8 @@ function init() {
                 img.style.backgroundImage = `url('${picList[selectedCharacter[i]]}')`;
 
                 base.addEventListener('click', () => {
-                    selectedCharacter = selectedCharacter.filter(item => item !== selectedCharacter[i]);
+                    selectedCharacter = selectedCharacter.filter(item => item !== span.innerText);
+                    console.log(selectedCharacter);
                     if (selectedCharacter.length === 0) {//处理角色被删完的情况
                         init();
                         return;
