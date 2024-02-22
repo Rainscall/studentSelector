@@ -159,6 +159,8 @@ async function openCharacterList() {
             }
         ]
         let base = document.createElement('div');
+        let scrollBox = document.createElement('div');
+        scrollBox.classList.add('scrollBox');
         for (let i = 0; i < functionList.length; i++) {
             let iconCotainer = document.createElement('div');
             let icon = document.createElement('div');
@@ -176,8 +178,10 @@ async function openCharacterList() {
             icon.classList.add('inlineSvgIcon');
             iconCotainer.appendChild(icon);
             iconCotainer.appendChild(tip);
-            base.appendChild(iconCotainer);
+            scrollBox.appendChild(iconCotainer);
         }
+
+        base.appendChild(scrollBox);
         document.body.prepend(base);
     })()
 
