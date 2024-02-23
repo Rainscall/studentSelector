@@ -548,14 +548,12 @@ function getAverageRGB(imgEl) {
 }
 
 function aliasToName(input) {
-    let name = '';
+    input = input.toLowerCase();
     for (let i = 0; i < Object.keys(aliasList).length; i++) {
         if (Object.values(aliasList)[i].includes(input)) {
-            name = Object.keys(aliasList)[i];
-            return name
+            return Object.keys(aliasList)[i];
         }
     }
-
     return false;
 }
 
