@@ -125,9 +125,12 @@ hr {
     background-color: rgba(241, 241, 241, 0.674);
 }
 
-.characterItem .selected:hover,
 .characterItem .selected {
-    background-color: #dfdfdf !important;
+    backdrop-filter: brightness(0.7);
+}
+
+.characterItem>.childPart:hover {
+    background-color: transparent !important;
 }
 
 #infoArea .childPart>div {
@@ -234,6 +237,7 @@ hr {
     box-sizing: border-box;
     max-width: calc(100vw - 4rem);
     bottom: 0;
+    z-index: 10;
 }
 
 .fixedBack>div>div {
