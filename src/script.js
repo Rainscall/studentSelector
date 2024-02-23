@@ -204,8 +204,7 @@ async function openCharacterList() {
             {
                 'name': '顶部',
                 'iconSvg': '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--!Font Awesome Free 6.5.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2024 Fonticons, Inc.--><path d="M246.6 41.4c-12.5-12.5-32.8-12.5-45.3 0l-160 160c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L224 109.3 361.4 246.6c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3l-160-160zm160 352l-160-160c-12.5-12.5-32.8-12.5-45.3 0l-160 160c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L224 301.3 361.4 438.6c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3z"/></svg>',
-                'callback': `(()=>{infoArea.children[0].scrollIntoView({behavior: "smooth"});
-                })`
+                'callback': `(()=>{infoArea.children[0].scrollIntoView({behavior: "smooth"});})`
             },
             {
                 'name': '清空',
@@ -311,6 +310,7 @@ async function openCharacterList() {
 
 async function writeInfo(r) {
     infoArea.classList.remove('shadowBorder');
+    removeElementsByClassNameSync('tempElement');
     infoArea.innerHTML = '';
     (() => {
         const functionList = [
@@ -430,17 +430,18 @@ async function writeInfo(r) {
                 container.appendChild(document.createElement('hr'));
             }
         }
-
         infoArea.appendChild(container);
     }
+
+    (() => { infoArea.children[0].scrollIntoView({ behavior: "smooth" }); })()
 }
 
 async function doSearch(query = '1.1.1.1', type) {
     try {
         //检查是否是外号，如果带‘,’就不检查
-        // if (query.indexOf(',') === 0 || aliasToName(query) !== false) {
-        //     query = aliasToName(query);
-        // }
+        if (query.indexOf(',') === 0 || aliasToName(query) !== false) {
+            query = aliasToName(query);
+        }
         const r = await fetch(`${apiEndpoint}/?${type}=${encodeURIComponent(query)}`).then(r => r.json());
         removeElementsByClassName('temp-search-loadingToast', 500);
         if (r.status === 'NOT FOUND') {
@@ -460,6 +461,13 @@ async function removeElementsByClassName(className, delay = 0) {
             ele[i].parentNode.removeChild(ele[i]);
         }
     }, delay);
+}
+
+function removeElementsByClassNameSync(className) {
+    let ele = document.getElementsByClassName(className);
+    for (let i = 0; i < ele.length; i++) {
+        ele[i].parentNode.removeChild(ele[i]);
+    }
 }
 
 function createToast(info, time = 4300, color = '#FFF', bgColor = '#414141', exClassName) {
@@ -603,6 +611,16 @@ function aliasToName(input) {
 }
 
 const picList = {
+    "阿尔托莉雅・卡斯特": "./src/img/heroes/Servant284.jpg",
+    "雨之魔女梣": "./src/img/heroes/Servant385.jpg",
+    "阿瓦隆女士": "./src/img/heroes/Servant353.jpg",
+    "Archetype：Earth": "./src/img/heroes/Servant351.jpg",
+    "奥伯龙": "./src/img/heroes/Servant316.jpg",
+    "光之高扬斯卡娅": "./src/img/heroes/Servant314.jpg",
+    "妖精骑士兰斯洛特": "./src/img/heroes/Servant312.jpg",
+    "摩根": "./src/img/heroes/Servant309.jpg",
+    "梅林": "./src/img/heroes/Servant150.jpg",
+    "诸葛孔明〔埃尔梅罗Ⅱ世〕": "./src/img/heroes/Servant037.jpg",
     "安德洛墨达": "./src/img/heroes/Servant406.jpg",
     "源赖光／丑御前": "./src/img/heroes/Servant403.jpg",
     "日本武尊": "./src/img/heroes/Servant402.jpg",
@@ -611,8 +629,6 @@ const picList = {
     "托勒密": "./src/img/heroes/Servant394.jpg",
     "旺吉娜": "./src/img/heroes/Servant393.jpg",
     "梅柳齐娜": "./src/img/heroes/Servant390.jpg",
-    "阿尔托莉雅・卡斯特": "./src/img/heroes/Servant284.jpg",
-    "雨之魔女梣": "./src/img/heroes/Servant385.jpg",
     "美杜莎": "./src/img/heroes/Servant384.jpg",
     "杜尔伽": "./src/img/heroes/Servant383.jpg",
     "怖军": "./src/img/heroes/Servant381.jpg",
@@ -630,8 +646,6 @@ const picList = {
     "千利休": "./src/img/heroes/Servant362.jpg",
     "斯卡哈・斯卡蒂": "./src/img/heroes/Servant215.jpg",
     "伊吹童子": "./src/img/heroes/Servant299.jpg",
-    "阿瓦隆女士": "./src/img/heroes/Servant353.jpg",
-    "Archetype：Earth": "./src/img/heroes/Servant351.jpg",
     "源为朝": "./src/img/heroes/Servant350.jpg",
     "曲亭马琴": "./src/img/heroes/Servant349.jpg",
     "詹姆斯・莫里亚蒂": "./src/img/heroes/Servant346.jpg",
@@ -648,10 +662,6 @@ const picList = {
     "雅克・德・莫莱": "./src/img/heroes/Servant324.jpg",
     "迦摩": "./src/img/heroes/Servant239.jpg",
     "冲田总司〔Alter〕": "./src/img/heroes/Servant209.jpg",
-    "奥伯龙": "./src/img/heroes/Servant316.jpg",
-    "光之高扬斯卡娅": "./src/img/heroes/Servant314.jpg",
-    "妖精骑士兰斯洛特": "./src/img/heroes/Servant312.jpg",
-    "摩根": "./src/img/heroes/Servant309.jpg",
     "克莱恩小姐": "./src/img/heroes/Servant307.jpg",
     "伽拉忒亚": "./src/img/heroes/Servant306.jpg",
     "阿摩耳〔卡莲〕": "./src/img/heroes/Servant305.jpg",
@@ -715,7 +725,6 @@ const picList = {
     "“山中老人”": "./src/img/heroes/Servant154.jpg",
     "所罗门": "./src/img/heroes/Servant083.jpg",
     "盖提亚": "./src/img/heroes/Servant151.jpg",
-    "梅林": "./src/img/heroes/Servant150.jpg",
     "提亚马特": "./src/img/heroes/Servant149.jpg",
     "魁札尔・科亚特尔": "./src/img/heroes/Servant144.jpg",
     "恩奇都": "./src/img/heroes/Servant143.jpg",
@@ -749,7 +758,6 @@ const picList = {
     "俄里翁": "./src/img/heroes/Servant060.jpg",
     "弗拉德三世": "./src/img/heroes/Servant052.jpg",
     "坂田金时": "./src/img/heroes/Servant051.jpg",
-    "诸葛孔明〔埃尔梅罗Ⅱ世〕": "./src/img/heroes/Servant037.jpg",
     "吉尔伽美什": "./src/img/heroes/Servant012.jpg",
     "阿蒂拉": "./src/img/heroes/Servant008.jpg"
 }
