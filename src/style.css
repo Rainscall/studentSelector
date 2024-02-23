@@ -125,12 +125,14 @@ hr {
     background-color: rgba(241, 241, 241, 0.674);
 }
 
-.characterItem .selected {
-    backdrop-filter: brightness(0.7);
-}
-
 .characterItem>.childPart:hover {
     background-color: transparent !important;
+}
+
+.characterItem .selected:hover,
+.characterItem .selected {
+    /* backdrop-filter: brightness(0.7); */
+    background-color: #00000045 !important;
 }
 
 #infoArea .childPart>div {
