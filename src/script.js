@@ -313,22 +313,50 @@ async function writeInfo(r) {
     infoArea.classList.remove('shadowBorder');
     infoArea.innerHTML = '';
     (() => {
+        const functionList = [
+            {
+                'name': '返回',
+                'iconSvg': '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--!Font Awesome Free 6.5.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2024 Fonticons, Inc.--><path d="M9.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l160 160c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L109.2 288 416 288c17.7 0 32-14.3 32-32s-14.3-32-32-32l-306.7 0L214.6 118.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-160 160z"/></svg>',
+                'callback': 'init'
+            },
+            {
+                'name': '顶部',
+                'iconSvg': '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--!Font Awesome Free 6.5.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2024 Fonticons, Inc.--><path d="M246.6 41.4c-12.5-12.5-32.8-12.5-45.3 0l-160 160c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L224 109.3 361.4 246.6c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3l-160-160zm160 352l-160-160c-12.5-12.5-32.8-12.5-45.3 0l-160 160c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L224 301.3 361.4 438.6c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3z"/></svg>',
+                'callback': `(()=>{infoArea.children[0].scrollIntoView({behavior: "smooth"});
+                })`
+            }
+        ]
+
         let base = document.createElement('div');
-        let iconCotainer = document.createElement('div');
-        let icon = document.createElement('div');
-        let tip = document.createElement('div');
+        let scrollBox = document.createElement('div');
+        scrollBox.classList.add('scrollBox');
+        for (let i = 0; i < functionList.length; i++) {
+            let iconCotainer = document.createElement('div');
+            let icon = document.createElement('div');
+            let tip = document.createElement('div');
 
-        tip.innerText = '返回';
-        icon.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--!Font Awesome Free 6.5.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2024 Fonticons, Inc.--><path d="M9.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l160 160c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L109.2 288 416 288c17.7 0 32-14.3 32-32s-14.3-32-32-32l-306.7 0L214.6 118.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-160 160z"/></svg>'
+            base.classList.add('tempElement');
+            base.classList.add('fixedBack');
+            base.classList.add('shadowBorder');
 
-        iconCotainer.addEventListener('click', init);
-        iconCotainer.classList.add('iconCotainer');
-        icon.classList.add('inlineSvgIcon');
-        iconCotainer.appendChild(icon);
-        iconCotainer.appendChild(tip);
-        base.appendChild(iconCotainer);
-        infoArea.appendChild(base);
+            tip.innerText = functionList[i].name;
+            icon.innerHTML = functionList[i].iconSvg;
+
+            iconCotainer.addEventListener('click', eval(functionList[i].callback));
+            iconCotainer.classList.add('iconCotainer');
+            icon.classList.add('inlineSvgIcon');
+            iconCotainer.appendChild(icon);
+            iconCotainer.appendChild(tip);
+            scrollBox.appendChild(iconCotainer);
+        }
+
+        base.appendChild(scrollBox);
+        document.body.prepend(base);
     })()
+
+    let blankDiv = document.createElement('div');
+    blankDiv.style.height = '4.2rem';
+    infoArea.appendChild(blankDiv);
 
     for (let i = 0; i < r.accounts.length; i++) {
         const infoList = r.accounts[i];
