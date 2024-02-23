@@ -337,12 +337,15 @@ async function writeInfo(r) {
         container.classList.add('shadowBorder');
         container.classList.add('infoContainer');
         for (let i = 0; i < Object.keys(infoList).length; i++) {
+            let currentValue = String(Object.values(infoList)[i]);
             const currentKey = Object.keys(infoList)[i];
             const displayKey = {
                 'id': '编号',
+                'tickets': '呼符',
                 'coins': '圣晶石',
                 'things': '英灵'
             }
+            let displayValue = '';
             let base = document.createElement('div');
             let title = document.createElement('div');
             let value = document.createElement('div');
@@ -350,9 +353,23 @@ async function writeInfo(r) {
             base.classList.add('childPart');
 
             title.innerText = displayKey[currentKey];
+            if (currentValue.indexOf('x,') > 0) {
+                currentValue = currentValue.substring(0, currentValue.length - 1);
+                currentValue = currentValue.split('x,');
 
-            value.innerText = Object.values(infoList)[i];
-            value.dataset.value = Object.values(infoList)[i];
+                for (let j = 0; j < currentValue.length; j++) {
+                    displayValue += currentValue[j];
+                    if (j != currentValue.length - 1) {
+                        displayValue += ' , ';
+                    }
+                }
+            } else {
+                displayValue = currentValue;
+            }
+
+            value.innerText = displayValue;
+            value.dataset.value = displayValue;
+
             switch (currentKey) {
                 case 'id': {
                     base.addEventListener('click', () => {
@@ -393,9 +410,9 @@ async function writeInfo(r) {
 async function doSearch(query = '1.1.1.1', type) {
     try {
         //检查是否是外号，如果带‘,’就不检查
-        if (query.indexOf(',') === 0 || aliasToName(query) !== false) {
-            query = aliasToName(query);
-        }
+        // if (query.indexOf(',') === 0 || aliasToName(query) !== false) {
+        //     query = aliasToName(query);
+        // }
         const r = await fetch(`${apiEndpoint}/?${type}=${encodeURIComponent(query)}`).then(r => r.json());
         removeElementsByClassName('temp-search-loadingToast', 500);
         if (r.status === 'NOT FOUND') {
