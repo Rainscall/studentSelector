@@ -281,6 +281,18 @@ hr {
     cursor: pointer;
 }
 
+.selectedCharacterList> :first-child {
+    display: flex;
+    width: 100%;
+    flex-wrap: wrap;
+    flex-direction: row;
+    justify-content: space-between;
+}
+
+.selectedCharacterList> :first-child>:last-child {
+    cursor: pointer;
+}
+
 .selectedCharacterList> :nth-child(2) {
     display: flex;
     flex-direction: row;
