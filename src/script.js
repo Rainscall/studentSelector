@@ -386,20 +386,44 @@ function createToast(info, time = 4300, color = '#FFF', bgColor = '#414141', exC
 
 function isPotentialSQLInjection(input) {
     const sqlKeywords = ['SELECT', 'INSERT', 'UPDATE', 'DELETE', 'DROP', 'UNION', 'OR', 'AND', 'FROM', 'WHERE', 'JOIN', 'INTO', 'VALUES'];
+    const symbols = ["'", '"', ';', '--', '()', '@', ')and(', '$', '%'];
+
+    // 检查关键词
     for (let i = 0; i < sqlKeywords.length; i++) {
-        if (input.toUpperCase().includes(sqlKeywords[i])) {
+        const regex = new RegExp('\\b' + sqlKeywords[i] + '\\b', 'i'); // 匹配整个单词
+        if (regex.test(input)) {
             return true;
         }
     }
 
-    const symbols = ["'", '"', ';', '--', '()', '@', ')and(', '$'];
+    // 检查符号
     for (let i = 0; i < symbols.length; i++) {
         if (input.includes(symbols[i])) {
             return true;
         }
     }
+
+    // 检查常见绕过技巧
+    const bypassPatterns = [
+        /\/\*/, // 注释符号
+        /(?:--\s*[^'"\r\n]*){2}/, // 双短横线注释
+        /(?:\/\*[\s\S]*?\*\/|([^:]|^)\/\/.*$)/m, // 注释符号和双斜杠注释
+        /(?:\\x0[01][0-9a-f])/i, // Unicode编码
+        /(?:[,\s])?or(?:\s+|\()=[\s\S]*--/i, // OR注入
+        /(?:[,\s])?and(?:\s+|\()=[\s\S]*--/i, // AND注入
+        /(?:UNION\s+ALL[\s\S]*?--)/i, // UNION注入
+        /(?:\binto\b\s*\b\w*\b\s*(?:\([^)]*\)|\bvalues\b)|\bvalues\b\s*\([^)]*\))/i // INTO和VALUES注入
+    ];
+
+    for (let i = 0; i < bypassPatterns.length; i++) {
+        if (bypassPatterns[i].test(input)) {
+            return true;
+        }
+    }
+
     return false;
 }
+
 
 function clearSelectedCharacter() {
     for (let i = 0; i < selectedCharacter.length; i++) {
