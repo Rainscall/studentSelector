@@ -155,9 +155,11 @@ async function openCharacterList() {
             {
                 'name': '顶部',
                 'iconSvg': '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--!Font Awesome Free 6.5.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2024 Fonticons, Inc.--><path d="M246.6 41.4c-12.5-12.5-32.8-12.5-45.3 0l-160 160c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L224 109.3 361.4 246.6c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3l-160-160zm160 352l-160-160c-12.5-12.5-32.8-12.5-45.3 0l-160 160c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L224 301.3 361.4 438.6c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3z"/></svg>',
-                'callback': 'backToTop'
+                'callback': `(()=>{infoArea.children[0].scrollIntoView({behavior: "smooth"});
+                })`
             }
         ]
+
         let base = document.createElement('div');
         let scrollBox = document.createElement('div');
         scrollBox.classList.add('scrollBox');
@@ -407,15 +409,9 @@ function clearSelectedCharacter() {
     createToast('清除完成', 2640);
 }
 
-function backToTop() {
-    infoArea.children[0].scrollIntoView({
-        behavior: "smooth"
-    });
-}
-
 function getAverageRGB(imgEl) {
 
-    var blockSize = 5,
+    let blockSize = 5,
         // only visit every 5 pixels
         defaultRGB = {
             r: 0,
