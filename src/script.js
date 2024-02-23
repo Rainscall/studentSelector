@@ -126,7 +126,6 @@ function init() {
                     .then(r => {
                         if (r == 'NOT FOUND') {
                             createToast('未找到符合条件的项目', 4300, '#FFF', '#840D23');
-                            input.value = '';
                         }
                     });
             });
@@ -142,7 +141,6 @@ function init() {
 
                 base.addEventListener('click', () => {
                     selectedCharacter = selectedCharacter.filter(item => item !== span.innerText);
-                    console.log(selectedCharacter);
                     if (selectedCharacter.length === 0) {//处理角色被删完的情况
                         init();
                         return;
@@ -170,6 +168,28 @@ async function openCharacterList() {
     infoArea.innerHTML = '';
 
     (() => {
+        function quickQuery() {
+            if (selectedCharacter.length === 0) {
+                createToast('至少需要选择一个角色', 2540, '#FFF', '#414141', 'temp-search-loadingToast');
+                return;
+            }
+            let queryStr = '';
+            for (let i = 0; i < selectedCharacter.length; i++) {
+                let str = `${selectedCharacter[i]}`;
+                if (selectedCharacter.length > 1 && i != selectedCharacter.length - 1) {
+                    str += ',';
+                }
+                queryStr += str;
+            }
+            createToast('正在查询', -1, '#FFF', '#414141', 'temp-search-loadingToast');
+            doSearch(queryStr, 'things')
+                .then(r => {
+                    if (r == 'NOT FOUND') {
+                        createToast('未找到符合条件的项目', 4300, '#FFF', '#840D23');
+                    }
+                });
+        }
+
         const functionList = [
             {
                 'name': '返回',
@@ -177,15 +197,20 @@ async function openCharacterList() {
                 'callback': 'init'
             },
             {
-                'name': '清空',
-                'iconSvg': '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--!Font Awesome Free 6.5.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2024 Fonticons, Inc.--><path d="M135.2 17.7C140.6 6.8 151.7 0 163.8 0H284.2c12.1 0 23.2 6.8 28.6 17.7L320 32h96c17.7 0 32 14.3 32 32s-14.3 32-32 32H32C14.3 96 0 81.7 0 64S14.3 32 32 32h96l7.2-14.3zM32 128H416V448c0 35.3-28.7 64-64 64H96c-35.3 0-64-28.7-64-64V128zm96 64c-8.8 0-16 7.2-16 16V432c0 8.8 7.2 16 16 16s16-7.2 16-16V208c0-8.8-7.2-16-16-16zm96 0c-8.8 0-16 7.2-16 16V432c0 8.8 7.2 16 16 16s16-7.2 16-16V208c0-8.8-7.2-16-16-16zm96 0c-8.8 0-16 7.2-16 16V432c0 8.8 7.2 16 16 16s16-7.2 16-16V208c0-8.8-7.2-16-16-16z"/></svg>',
-                'callback': 'clearSelectedCharacter'
+                'name': '查询',
+                'iconSvg': '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--!Font Awesome Free 6.5.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2024 Fonticons, Inc.--><path d="M416 208c0 45.9-14.9 88.3-40 122.7L502.6 457.4c12.5 12.5 12.5 32.8 0 45.3s-32.8 12.5-45.3 0L330.7 376c-34.4 25.2-76.8 40-122.7 40C93.1 416 0 322.9 0 208S93.1 0 208 0S416 93.1 416 208zM208 352a144 144 0 1 0 0-288 144 144 0 1 0 0 288z"/></svg>',
+                'callback': 'quickQuery'
             },
             {
                 'name': '顶部',
                 'iconSvg': '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--!Font Awesome Free 6.5.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2024 Fonticons, Inc.--><path d="M246.6 41.4c-12.5-12.5-32.8-12.5-45.3 0l-160 160c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L224 109.3 361.4 246.6c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3l-160-160zm160 352l-160-160c-12.5-12.5-32.8-12.5-45.3 0l-160 160c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L224 301.3 361.4 438.6c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3z"/></svg>',
                 'callback': `(()=>{infoArea.children[0].scrollIntoView({behavior: "smooth"});
                 })`
+            },
+            {
+                'name': '清空',
+                'iconSvg': '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--!Font Awesome Free 6.5.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2024 Fonticons, Inc.--><path d="M135.2 17.7C140.6 6.8 151.7 0 163.8 0H284.2c12.1 0 23.2 6.8 28.6 17.7L320 32h96c17.7 0 32 14.3 32 32s-14.3 32-32 32H32C14.3 96 0 81.7 0 64S14.3 32 32 32h96l7.2-14.3zM32 128H416V448c0 35.3-28.7 64-64 64H96c-35.3 0-64-28.7-64-64V128zm96 64c-8.8 0-16 7.2-16 16V432c0 8.8 7.2 16 16 16s16-7.2 16-16V208c0-8.8-7.2-16-16-16zm96 0c-8.8 0-16 7.2-16 16V432c0 8.8 7.2 16 16 16s16-7.2 16-16V208c0-8.8-7.2-16-16-16zm96 0c-8.8 0-16 7.2-16 16V432c0 8.8 7.2 16 16 16s16-7.2 16-16V208c0-8.8-7.2-16-16-16z"/></svg>',
+                'callback': 'clearSelectedCharacter'
             }
         ]
 
@@ -263,7 +288,6 @@ async function openCharacterList() {
                 base.classList.add('selected');
                 selectedCharacter.push(currentKey);
             }
-            console.log(selectedCharacter);
         })
 
         value.appendChild(pic);
@@ -308,7 +332,6 @@ async function writeInfo(r) {
 
     for (let i = 0; i < r.accounts.length; i++) {
         const infoList = r.accounts[i];
-        console.log(infoList);
         const infoArea = document.getElementById('infoArea');
         const container = document.createElement('div');
         container.classList.add('shadowBorder');
@@ -370,7 +393,6 @@ async function writeInfo(r) {
 async function doSearch(query = '1.1.1.1', type) {
     try {
         const r = await fetch(`${apiEndpoint}/?${type}=${encodeURIComponent(query)}`).then(r => r.json());
-        console.log(r);
         removeElementsByClassName('temp-search-loadingToast', 500);
         if (r.status === 'NOT FOUND') {
             return 'NOT FOUND';
