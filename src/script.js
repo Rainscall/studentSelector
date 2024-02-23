@@ -7,7 +7,7 @@ function init() {
     infoArea.classList.add('shadowBorder');
     infoArea.innerHTML = '';
     const infoList = [
-        ['钻石数量', '大于等于...', 'number', 'coins', {
+        ['圣晶石', '大于等于...', 'number', 'coins', {
             'step': 1,
             'min': 1
         }],
@@ -79,7 +79,7 @@ function init() {
         let value = document.createElement('div');
         base.classList.add('childPart');
         value.classList.add('inlineSvgIcon');
-        title.innerText = '角色列表';
+        title.innerText = '英灵列表';
         value.style.transform = 'translateY(-1px)';
         value.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--!Font Awesome Free 6.5.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2024 Fonticons, Inc.--><path d="M384 32c35.3 0 64 28.7 64 64V416c0 35.3-28.7 64-64 64H64c-35.3 0-64-28.7-64-64V96C0 60.7 28.7 32 64 32H384zM160 144c-13.3 0-24 10.7-24 24s10.7 24 24 24h94.1L119 327c-9.4 9.4-9.4 24.6 0 33.9s24.6 9.4 33.9 0l135-135V328c0 13.3 10.7 24 24 24s24-10.7 24-24V168c0-13.3-10.7-24-24-24H160z"/></svg>';
 
@@ -102,7 +102,7 @@ function init() {
             let value = document.createElement('div');
 
             base.classList.add('selectedCharacterList');
-            titleText.innerText = '已选择以下角色';
+            titleText.innerText = '已选择以下英灵';
             titleIcon.classList.add('inlineSvgIcon');
             titleIcon.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--!Font Awesome Free 6.5.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2024 Fonticons, Inc.--><path d="M416 208c0 45.9-14.9 88.3-40 122.7L502.6 457.4c12.5 12.5 12.5 32.8 0 45.3s-32.8 12.5-45.3 0L330.7 376c-34.4 25.2-76.8 40-122.7 40C93.1 416 0 322.9 0 208S93.1 0 208 0S416 93.1 416 208zM208 352a144 144 0 1 0 0-288 144 144 0 1 0 0 288z"/></svg>';
             title.appendChild(titleText);
@@ -110,7 +110,7 @@ function init() {
 
             titleIcon.addEventListener('click', () => {
                 if (selectedCharacter.length === 0) {
-                    createToast('至少需要选择一个角色', 2540, '#FFF', '#414141', 'temp-search-loadingToast');
+                    createToast('至少需要选择一个英灵', 2540, '#FFF', '#414141', 'temp-search-loadingToast');
                     return;
                 }
                 let queryStr = '';
@@ -141,7 +141,7 @@ function init() {
 
                 base.addEventListener('click', () => {
                     selectedCharacter = selectedCharacter.filter(item => item !== span.innerText);
-                    if (selectedCharacter.length === 0) {//处理角色被删完的情况
+                    if (selectedCharacter.length === 0) {//处理英灵被删完的情况
                         init();
                         return;
                     }
@@ -170,7 +170,7 @@ async function openCharacterList() {
     (() => {
         function quickQuery() {
             if (selectedCharacter.length === 0) {
-                createToast('至少需要选择一个角色', 2540, '#FFF', '#414141', 'temp-search-loadingToast');
+                createToast('至少需要选择一个英灵', 2540, '#FFF', '#414141', 'temp-search-loadingToast');
                 return;
             }
             let queryStr = '';
@@ -302,7 +302,7 @@ async function openCharacterList() {
         infoArea.appendChild(container);
     }
 
-    //恢复已经选择的角色
+    //恢复已经选择的英灵
     for (let i = 0; i < selectedCharacter.length; i++) {
         document.getElementById(`characterSelector-${selectedCharacter[i]}`).classList.add('selected');
     }
@@ -340,8 +340,8 @@ async function writeInfo(r) {
             const currentKey = Object.keys(infoList)[i];
             const displayKey = {
                 'id': '编号',
-                'coins': '钻石',
-                'things': '角色'
+                'coins': '圣晶石',
+                'things': '英灵'
             }
             let base = document.createElement('div');
             let title = document.createElement('div');
