@@ -308,7 +308,7 @@ async function openCharacterList() {
 
 }
 
-async function writeInfo(r) {
+async function writeInfo(r, sortOrder = 'asc') {
     infoArea.classList.remove('shadowBorder');
     removeElementsByClassNameSync('tempElement');
     infoArea.innerHTML = '';
@@ -357,6 +357,8 @@ async function writeInfo(r) {
     let blankDiv = document.createElement('div');
     blankDiv.style.height = '4.2rem';
     infoArea.appendChild(blankDiv);
+
+    r.accounts = sortByItems(r.accounts, 'coins', sortOrder);
 
     for (let i = 0; i < r.accounts.length; i++) {
         const infoList = r.accounts[i];
@@ -447,7 +449,13 @@ async function doSearch(query = '1.1.1.1', type) {
         if (r.status === 'NOT FOUND') {
             return 'NOT FOUND';
         }
-        writeInfo(r);
+
+        if (type === 'coins') {
+            writeInfo(r);
+        } else {
+            writeInfo(r, 'desc');
+        }
+
     } catch (error) {
         removeElementsByClassName('temp-search-loadingToast');
         createToast(`请求失败\n${error}`, 4300, '#FFF', '#840D23');
@@ -546,13 +554,17 @@ function getAverageRGB(imgEl) {
     let blockSize = 5,
         // only visit every 5 pixels
         defaultRGB = {
-            r: 0,
-            g: 0,
-            b: 0
+            r: 255,
+            g: 255,
+            b: 255
         },
         // for non-supporting envs
         canvas = document.createElement('canvas'),
-        context = canvas.getContext && canvas.getContext('2d', { willReadFrequently: true }),
+        context = canvas.getContext && canvas.getContext('2d', {
+            willReadFrequently: true,
+            alpha: false
+        }),
+
         data,
         width,
         height,
@@ -596,7 +608,6 @@ function getAverageRGB(imgEl) {
     rgb.b = ~~(rgb.b / count);
 
     return rgb;
-
 }
 
 function aliasToName(input) {
@@ -607,6 +618,13 @@ function aliasToName(input) {
         }
     }
     return false;
+}
+
+function sortByItems(jsonArray, orderBy, sortOrder = 'asc') {
+    const orderMultiplier = (sortOrder === 'desc') ? -1 : 1;
+    jsonArray.sort((a, b) => (a[orderBy] - b[orderBy]) * orderMultiplier);
+
+    return jsonArray;
 }
 
 const picList = {
