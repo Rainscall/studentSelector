@@ -1,6 +1,8 @@
 "use strict"
 const apiEndpoint = 'https://studentselector-backend.colorspark.net';
 let selectedCharacter = [];
+let respondCache;
+let sortByCache = '';
 
 function init() {
     removeElementsByClassName('tempElement');
@@ -308,7 +310,7 @@ async function openCharacterList() {
 
 }
 
-async function writeInfo(r, sortOrder = 'asc') {
+async function writeInfo(r, sortOrder = 'asc', sortBy = 'coins') {
     infoArea.classList.remove('shadowBorder');
     removeElementsByClassNameSync('tempElement');
     infoArea.innerHTML = '';
@@ -363,7 +365,7 @@ async function writeInfo(r, sortOrder = 'asc') {
     blankDiv.style.height = '4.2rem';
     infoArea.appendChild(blankDiv);
 
-    r.accounts = sortByItems(r.accounts, 'coins', sortOrder);
+    r.accounts = sortByItems(r.accounts, sortBy, sortOrder);
 
     for (let i = 0; i < r.accounts.length; i++) {
         const infoList = r.accounts[i];
@@ -454,6 +456,8 @@ async function doSearch(query = '1.1.1.1', type) {
         if (r.status === 'NOT FOUND') {
             return 'NOT FOUND';
         }
+
+        respondCache = r;
 
         if (type === 'coins') {
             writeInfo(r);
@@ -633,9 +637,6 @@ function sortByItems(jsonArray, orderBy, sortOrder = 'asc') {
 }
 
 function openSortMenu() {
-    createToast('正在开发，暂不可用');
-    return;
-
     let dialog = document.createElement('dialog');
     let base = document.createElement('div');
     let title = document.createElement('h2');
@@ -684,13 +685,23 @@ function openSortMenu() {
         });
     }
 
-    selectorContainer.children[0].click();
+    if (!sortByCache) {
+        selectorContainer.children[0].click();
+    } else {
+        for (let i = 0; i < selectorContainer.children.length; i++) {
+            if (method[selectorContainer.children[i].children[1].dataset.value] === sortByCache) {
+                selectorContainer.children[i].click();
+            }
+        }
+    }
 
     title.innerText = '排序方法';
     apply.innerText = '确定';
 
     apply.addEventListener('click', () => {
         let selected = method[document.querySelector('.selectorContainer>.selected>label').dataset.value];
+        sortByCache = selected;
+        writeInfo(respondCache, 'desc', selected);
         dialog.close();
     });
 
