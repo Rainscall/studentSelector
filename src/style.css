@@ -349,6 +349,10 @@ hr {
     outline: none;
 }
 
+.sortDialog::backdrop {
+    background-color: #0000000f;
+}
+
 .sortDialog .basePart {
     flex-wrap: wrap;
     align-items: flex-start;
@@ -429,5 +433,18 @@ hr {
 
     .characterItem .childPart :nth-child(1) :nth-child(1) {
         color: #000;
+    }
+
+    .sortDialog {
+        background-color: #181818;
+    }
+
+    .sortDialog .apply,
+    .sortDialog .selectorContainer>div {
+        background-color: #3e3e3e;
+    }
+
+    .sortDialog .selectorContainer .selected {
+        background-color: #757575;
     }
 }

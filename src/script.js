@@ -6,6 +6,8 @@ let sortByCache = '';
 
 function init() {
     removeElementsByClassName('tempElement');
+    sortByCache = '';
+    respondCache = '';
     infoArea.classList.add('shadowBorder');
     infoArea.innerHTML = '';
     const infoList = [
