@@ -338,6 +338,64 @@ hr {
     background-color: #0000002c;
 }
 
+.sortDialog {
+    border: none;
+    box-sizing: border-box;
+    margin: auto;
+    max-width: calc(512px - 24px);
+    width: calc(90vw - 24px);
+    border-radius: 12px;
+    padding: 1.4rem;
+    outline: none;
+}
+
+.sortDialog .basePart {
+    flex-wrap: wrap;
+    align-items: flex-start;
+}
+
+.sortDialog .apply {
+    background-color: #0000000d;
+    padding: 0.3rem 0.6rem;
+    border-radius: 114514rem;
+    cursor: pointer;
+    width: 100%;
+    box-sizing: border-box;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    user-select: none;
+}
+
+.sortDialog .selectorContainer {
+    display: flex;
+    flex-direction: column;
+    flex-wrap: wrap;
+    align-items: flex-start;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+.sortDialog .selectorContainer>div {
+    background-color: #0000000d;
+    width: 100%;
+    margin: 0.225rem 0;
+    padding: 0.625rem;
+    border-radius: 1rem;
+    box-sizing: border-box;
+    cursor: pointer;
+    user-select: none;
+    transition: background-color .17s ease-in-out;
+}
+
+.sortDialog .selectorContainer .selected {
+    background-color: #0000001a;
+}
+
+.sortDialog .selectorContainer>div input[type="radio"] {
+    display: none;
+}
+
 @media (prefers-color-scheme: dark) {
     .shadowBorder {
         box-shadow: 0 0px 45px -3px #fcfcfc1d;

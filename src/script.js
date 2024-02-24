@@ -324,6 +324,11 @@ async function writeInfo(r, sortOrder = 'asc') {
                 'iconSvg': '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--!Font Awesome Free 6.5.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2024 Fonticons, Inc.--><path d="M246.6 41.4c-12.5-12.5-32.8-12.5-45.3 0l-160 160c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L224 109.3 361.4 246.6c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3l-160-160zm160 352l-160-160c-12.5-12.5-32.8-12.5-45.3 0l-160 160c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L224 301.3 361.4 438.6c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3z"/></svg>',
                 'callback': `(()=>{infoArea.children[0].scrollIntoView({behavior: "smooth"});
                 })`
+            },
+            {
+                'name': '排序',
+                'iconSvg': '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512"><!--!Font Awesome Free 6.5.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2024 Fonticons, Inc.--><path d="M151.6 42.4C145.5 35.8 137 32 128 32s-17.5 3.8-23.6 10.4l-88 96c-11.9 13-11.1 33.3 2 45.2s33.3 11.1 45.2-2L96 146.3V448c0 17.7 14.3 32 32 32s32-14.3 32-32V146.3l32.4 35.4c11.9 13 32.2 13.9 45.2 2s13.9-32.2 2-45.2l-88-96zM320 480h32c17.7 0 32-14.3 32-32s-14.3-32-32-32H320c-17.7 0-32 14.3-32 32s14.3 32 32 32zm0-128h96c17.7 0 32-14.3 32-32s-14.3-32-32-32H320c-17.7 0-32 14.3-32 32s14.3 32 32 32zm0-128H480c17.7 0 32-14.3 32-32s-14.3-32-32-32H320c-17.7 0-32 14.3-32 32s14.3 32 32 32zm0-128H544c17.7 0 32-14.3 32-32s-14.3-32-32-32H320c-17.7 0-32 14.3-32 32s14.3 32 32 32z"/></svg>',
+                'callback': 'openSortMenu'
             }
         ]
 
@@ -625,6 +630,77 @@ function sortByItems(jsonArray, orderBy, sortOrder = 'asc') {
     jsonArray.sort((a, b) => (a[orderBy] - b[orderBy]) * orderMultiplier);
 
     return jsonArray;
+}
+
+function openSortMenu() {
+    createToast('正在开发，暂不可用');
+    return;
+
+    let dialog = document.createElement('dialog');
+    let base = document.createElement('div');
+    let title = document.createElement('h2');
+    let selectorContainer = document.createElement('div');
+    let apply = document.createElement('div');
+
+    const method = {
+        '圣晶石': 'coins',
+        '呼符': 'tickets',
+        '编号': 'id'
+    }
+
+    dialog.classList.add('sortDialog');
+    dialog.classList.add('shadowBorder');
+    base.classList.add('basePart');
+    apply.classList.add('apply');
+    selectorContainer.classList.add('selectorContainer')
+
+    for (let i = 0; i < Object.keys(method).length; i++) {
+        let base = document.createElement('div');
+        let option = document.createElement('input');
+        option.type = 'radio';
+        let label = document.createElement('label');
+        label.setAttribute('for', `temp-sortSelector-${Object.keys(method)[i]}`);
+        label.innerText = Object.keys(method)[i];
+        label.dataset.value = Object.keys(method)[i];
+
+        option.id = `temp-sortSelector-${Object.keys(method)[i]}`;
+        option.value = Object.values(method)[i];
+        option.innerText = Object.keys(method)[i];
+        option.name = 'sortSelector';
+        base.appendChild(option);
+        base.appendChild(label);
+        selectorContainer.appendChild(base);
+
+        base.addEventListener('click', () => {
+            for (let j = 0; j < Object.keys(method).length; j++) {
+                try {
+                    selectorContainer.children[j].classList.remove('selected');
+                } catch (error) {
+                    continue;
+                }
+            }
+            base.classList.add('selected');
+            base.children[1].click();
+        });
+    }
+
+    selectorContainer.children[0].click();
+
+    title.innerText = '排序方法';
+    apply.innerText = '确定';
+
+    apply.addEventListener('click', () => {
+        let selected = method[document.querySelector('.selectorContainer>.selected>label').dataset.value];
+        dialog.close();
+    });
+
+    base.appendChild(title);
+    base.appendChild(document.createElement('hr'));
+    base.appendChild(selectorContainer);
+    base.appendChild(apply);
+    dialog.appendChild(base);
+    document.body.appendChild(dialog);
+    dialog.showModal();
 }
 
 const picList = {
