@@ -552,7 +552,7 @@ function getAverageRGB(imgEl) {
         },
         // for non-supporting envs
         canvas = document.createElement('canvas'),
-        context = canvas.getContext && canvas.getContext('2d'),
+        context = canvas.getContext && canvas.getContext('2d', { willReadFrequently: true }),
         data,
         width,
         height,
@@ -578,7 +578,6 @@ function getAverageRGB(imgEl) {
         data = context.getImageData(0, 0, width, height);
     } catch (e) {
         /* security error, img on diff domain */
-        alert('x');
         return defaultRGB;
     }
 
