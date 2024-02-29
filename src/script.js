@@ -316,6 +316,15 @@ async function openCharacterList() {
 
 }
 
+/**
+ * 写入数据到infoArea
+ * @param {json} r 
+ * @param {String} sortOrder 
+ * @param {String} sortBy 
+ * @param {Number} maxPageSize 
+ * @param {Number} startsFrom 
+ * @returns 
+ */
 async function writeInfo(r, sortOrder = 'asc', sortBy = 'coins', maxPageSize = 100, startsFrom = 0) {
     if (startsFrom > r.accounts.length) {
         createToast('到底了');
@@ -388,7 +397,6 @@ async function writeInfo(r, sortOrder = 'asc', sortBy = 'coins', maxPageSize = 1
     }
 
     for (let i = startsFrom, j = 0; i < startsFrom + maxPageSize; i++, j++) {
-        console.log(i);
         netCache.pageCache[j] = r.accounts[i];
     }
 
@@ -486,11 +494,11 @@ async function writeInfo(r, sortOrder = 'asc', sortBy = 'coins', maxPageSize = 1
         let base = document.createElement('div');
         const functionList = {
             'prev': {
-                'svgIcon': '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--!Font Awesome Free 6.5.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2024 Fonticons, Inc.--><path d="M9.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l192 192c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L77.3 256 246.6 86.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-192 192z"/></svg>',
+                'svgIcon': '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 512"><!--!Font Awesome Free 6.5.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2024 Fonticons, Inc.--><path d="M9.4 278.6c-12.5-12.5-12.5-32.8 0-45.3l128-128c9.2-9.2 22.9-11.9 34.9-6.9s19.8 16.6 19.8 29.6l0 256c0 12.9-7.8 24.6-19.8 29.6s-25.7 2.2-34.9-6.9l-128-128z"/></svg>',
                 'callback': `(() => { changePage('prev') })`
             },
             'next': {
-                'svgIcon': '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--!Font Awesome Free 6.5.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2024 Fonticons, Inc.--><path d="M310.6 233.4c12.5 12.5 12.5 32.8 0 45.3l-192 192c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3L242.7 256 73.4 86.6c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0l192 192z"/></svg>',
+                'svgIcon': '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 512"><!--!Font Awesome Free 6.5.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2024 Fonticons, Inc.--><path d="M246.6 278.6c12.5-12.5 12.5-32.8 0-45.3l-128-128c-9.2-9.2-22.9-11.9-34.9-6.9s-19.8 16.6-19.8 29.6l0 256c0 12.9 7.8 24.6 19.8 29.6s25.7 2.2 34.9-6.9l128-128z"/></svg>',
                 'callback': `(() => { changePage('next') })`
             }
         }
@@ -529,6 +537,7 @@ async function doSearch(query = '1.1.1.1', type) {
         //检查是否是外号，如果带‘,’就不检查
         if (query.indexOf(',') === 0 || aliasToName(query) !== false) {
             query = aliasToName(query);
+            createToast(`重定向至 ${query}`);
         }
         const r = await fetch(`${apiEndpoint}/?${type}=${encodeURIComponent(query)}`).then(r => r.json());
         removeElementsByClassName('temp-search-loadingToast', 500);
@@ -539,6 +548,7 @@ async function doSearch(query = '1.1.1.1', type) {
         netCache.respondCache = r;
         netCache.lastStartsFrom = 0;
         sortByCache = 'coins';
+        createToast(`找到${netCache.respondCache.accounts.length}个结果`);
 
         if (type === 'coins') {
             writeInfo(r);
