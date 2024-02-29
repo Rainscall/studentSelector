@@ -1300,7 +1300,8 @@ const aliasList = {
 
     ],
     "BeastⅢ／R": [
-
+        'beastⅢ/r',
+        'beastiii/r'
     ],
     "Meltryllis": [
 
@@ -1318,7 +1319,9 @@ const aliasList = {
 
     ],
     "“山中老人”": [
-
+        '"山中老人"',
+        '"山中老头"',
+        '山中老人'
     ],
     "所罗门": [
         'poi',
