@@ -1,13 +1,17 @@
 "use strict"
 const apiEndpoint = 'https://studentselector-backend.colorspark.net';
 let selectedCharacter = [];
-let respondCache;
+let netCache = {
+    respondCache: undefined,
+    pageCache: [],
+    lastStartsFrom: 0
+};
 let sortByCache = '';
 
 function init() {
     removeElementsByClassName('tempElement');
     sortByCache = '';
-    respondCache = '';
+    netCache.respondCache = '';
     infoArea.classList.add('shadowBorder');
     infoArea.innerHTML = '';
     const infoList = [
@@ -312,7 +316,13 @@ async function openCharacterList() {
 
 }
 
-async function writeInfo(r, sortOrder = 'asc', sortBy = 'coins') {
+async function writeInfo(r, sortOrder = 'asc', sortBy = 'coins', maxPageSize = 200, startsFrom = 0) {
+    if (startsFrom > r.accounts.length) {
+        createToast('到底了');
+        netCache.lastStartsFrom -= 200;
+        return;
+    }
+
     infoArea.classList.remove('shadowBorder');
     removeElementsByClassNameSync('tempElement');
     infoArea.innerHTML = '';
@@ -361,16 +371,29 @@ async function writeInfo(r, sortOrder = 'asc', sortBy = 'coins') {
 
         base.appendChild(scrollBox);
         document.body.prepend(base);
-    })()
+    })();
 
-    let blankDiv = document.createElement('div');
-    blankDiv.style.height = '4.2rem';
-    infoArea.appendChild(blankDiv);
+    (() => {
+        let blankDiv = document.createElement('div');
+        blankDiv.style.height = '4.2rem';
+        infoArea.appendChild(blankDiv);
+    })();
 
     r.accounts = sortByItems(r.accounts, sortBy, sortOrder);
 
-    for (let i = 0; i < r.accounts.length; i++) {
-        const infoList = r.accounts[i];
+
+
+    if (startsFrom + maxPageSize > r.accounts.length) {
+        maxPageSize = r.accounts.length - startsFrom;
+    }
+
+    for (let i = startsFrom, j = 0; i < startsFrom + maxPageSize; i++, j++) {
+        console.log(i);
+        netCache.pageCache[j] = r.accounts[i];
+    }
+
+    for (let i = 0; i < maxPageSize; i++) {
+        const infoList = netCache.pageCache[i];
         const infoArea = document.getElementById('infoArea');
         const container = document.createElement('div');
         container.classList.add('shadowBorder');
@@ -425,9 +448,8 @@ async function writeInfo(r, sortOrder = 'asc', sortBy = 'coins') {
                         textArea.select()
                         document.execCommand('copy')
                         document.body.removeChild(textArea)
-                        let Interval = setInterval(() => {
+                        setTimeout(() => {
                             value.innerText = value.dataset.value;
-                            clearInterval(Interval);
                         }, 350)
                     })
                     break;
@@ -444,6 +466,61 @@ async function writeInfo(r, sortOrder = 'asc', sortBy = 'coins') {
         infoArea.appendChild(container);
     }
 
+    (() => {
+        function changePage(action) {
+            if (action === 'prev') {
+                if (netCache.lastStartsFrom === 0) {
+                    createToast('到顶了');
+                    return;
+                }
+                netCache.lastStartsFrom -= 200;
+                writeInfo(netCache.respondCache, 'coins', 'desc', 200, netCache.lastStartsFrom);
+            } else {
+                netCache.lastStartsFrom += 200;
+                writeInfo(netCache.respondCache, 'coins', 'desc', 200, netCache.lastStartsFrom);
+            }
+        }
+
+        const infoArea = document.getElementById('infoArea');
+        let switcher = document.createElement('div');
+        let base = document.createElement('div');
+        const functionList = {
+            'prev': {
+                'svgIcon': '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--!Font Awesome Free 6.5.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2024 Fonticons, Inc.--><path d="M9.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l192 192c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L77.3 256 246.6 86.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-192 192z"/></svg>',
+                'callback': `(() => { changePage('prev') })`
+            },
+            'next': {
+                'svgIcon': '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--!Font Awesome Free 6.5.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2024 Fonticons, Inc.--><path d="M310.6 233.4c12.5 12.5 12.5 32.8 0 45.3l-192 192c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3L242.7 256 73.4 86.6c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0l192 192z"/></svg>',
+                'callback': `(() => { changePage('next') })`
+            }
+        }
+        switcher.classList.add('infoContainer');
+        switcher.classList.add('pageSwitcherBase');
+        base.classList.add('pageSwitcher');
+        base.classList.add('shadowBorder');
+
+        for (let i = 0; i < Object.keys(functionList).length; i++) {
+            let icon = document.createElement('div');
+            icon.classList.add('inlineSvgIcon');
+            icon.classList.add('curPtr');
+            icon.innerHTML = Object.values(functionList)[i].svgIcon;
+
+            icon.addEventListener('click', eval(Object.values(functionList)[i].callback));
+            base.appendChild(icon);
+        }
+
+        switcher.appendChild(base);
+        infoArea.appendChild(switcher);
+    })();
+
+
+    (() => {
+        let blankDiv = document.createElement('div');
+        blankDiv.style.height = '6rem';
+        infoArea.appendChild(blankDiv);
+    })();
+
+    //平滑滑动到顶
     (() => { infoArea.children[0].scrollIntoView({ behavior: "smooth" }); })()
 }
 
@@ -459,10 +536,12 @@ async function doSearch(query = '1.1.1.1', type) {
             return 'NOT FOUND';
         }
 
-        respondCache = r;
+        netCache.respondCache = r;
+        netCache.lastStartsFrom = 0;
 
         if (type === 'coins') {
             writeInfo(r);
+            sortByCache = 'coins';
         } else {
             writeInfo(r, 'desc');
         }
@@ -621,6 +700,11 @@ function getAverageRGB(imgEl) {
     return rgb;
 }
 
+/**
+ * 根据外号查找对应大名
+ * @param {String} input 
+ * @returns 
+ */
 function aliasToName(input) {
     input = input.toLowerCase();
     for (let i = 0; i < Object.keys(aliasList).length; i++) {
@@ -631,13 +715,22 @@ function aliasToName(input) {
     return false;
 }
 
+/**
+ * 对json对象进行排序
+ * @param {json} jsonArray 
+ * @param {String} orderBy 
+ * @param {string} sortOrder 
+ * @returns 排序后的json
+ */
 function sortByItems(jsonArray, orderBy, sortOrder = 'asc') {
     const orderMultiplier = (sortOrder === 'desc') ? -1 : 1;
     jsonArray.sort((a, b) => (a[orderBy] - b[orderBy]) * orderMultiplier);
-
     return jsonArray;
 }
 
+/**
+ * 打开排序模态框
+ */
 function openSortMenu() {
     let dialog = document.createElement('dialog');
     let base = document.createElement('div');
@@ -702,9 +795,13 @@ function openSortMenu() {
 
     apply.addEventListener('click', () => {
         let selected = method[document.querySelector('.selectorContainer>.selected>label').dataset.value];
-        sortByCache = selected;
-        writeInfo(respondCache, 'desc', selected);
+        if (sortByCache != selected) {
+            sortByCache = selected;
+            netCache.lastStartsFrom = 0;
+            writeInfo(netCache.respondCache, 'desc', selected);
+        }
         dialog.close();
+        dialog.remove();
     });
 
     base.appendChild(title);
