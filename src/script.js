@@ -316,10 +316,10 @@ async function openCharacterList() {
 
 }
 
-async function writeInfo(r, sortOrder = 'asc', sortBy = 'coins', maxPageSize = 200, startsFrom = 0) {
+async function writeInfo(r, sortOrder = 'asc', sortBy = 'coins', maxPageSize = 100, startsFrom = 0) {
     if (startsFrom > r.accounts.length) {
         createToast('到底了');
-        netCache.lastStartsFrom -= 200;
+        netCache.lastStartsFrom -= 100;
         return;
     }
 
@@ -473,11 +473,11 @@ async function writeInfo(r, sortOrder = 'asc', sortBy = 'coins', maxPageSize = 2
                     createToast('到顶了');
                     return;
                 }
-                netCache.lastStartsFrom -= 200;
-                writeInfo(netCache.respondCache, 'coins', 'desc', 200, netCache.lastStartsFrom);
+                netCache.lastStartsFrom -= 100;
+                writeInfo(netCache.respondCache, 'coins', 'desc', 100, netCache.lastStartsFrom);
             } else {
-                netCache.lastStartsFrom += 200;
-                writeInfo(netCache.respondCache, 'coins', 'desc', 200, netCache.lastStartsFrom);
+                netCache.lastStartsFrom += 100;
+                writeInfo(netCache.respondCache, 'coins', 'desc', 100, netCache.lastStartsFrom);
             }
         }
 
@@ -538,10 +538,10 @@ async function doSearch(query = '1.1.1.1', type) {
 
         netCache.respondCache = r;
         netCache.lastStartsFrom = 0;
+        sortByCache = 'coins';
 
         if (type === 'coins') {
             writeInfo(r);
-            sortByCache = 'coins';
         } else {
             writeInfo(r, 'desc');
         }
