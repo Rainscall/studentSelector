@@ -327,7 +327,7 @@ async function openCharacterList() {
  * @returns 
  */
 async function writeInfo(r, sortOrder = 'asc', sortBy = 'coins', maxPageSize = stepLength, startsFrom = 0) {
-    if (startsFrom > r.accounts.length) {
+    if (startsFrom >= r.accounts.length) {
         createToast('到底了');
         netCache.lastStartsFrom -= stepLength;
         return;
@@ -527,7 +527,7 @@ async function writeInfo(r, sortOrder = 'asc', sortBy = 'coins', maxPageSize = s
         infoArea.appendChild(container);
     }
 
-    (() => {
+    if (netCache.respondCache.accounts.length > stepLength) {
         function changePage(action) {
             if (action === 'prev') {
                 if (netCache.lastStartsFrom === 0) {
@@ -572,7 +572,7 @@ async function writeInfo(r, sortOrder = 'asc', sortBy = 'coins', maxPageSize = s
 
         switcher.appendChild(base);
         infoArea.appendChild(switcher);
-    })();
+    }
 
 
     (() => {
