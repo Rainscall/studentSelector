@@ -430,14 +430,13 @@ async function writeInfo(r, sortOrder = 'asc', sortBy = 'coins', maxPageSize = 1
                 for (let j = 0; j < currentValue.length; j++) {
                     displayValue += currentValue[j];
                     if (j != currentValue.length - 1) {
-                        displayValue += ' , ';
+                        displayValue += ',';
                     }
                 }
             } else {
                 displayValue = currentValue;
             }
 
-            value.innerText = displayValue;
             value.dataset.value = displayValue;
 
             switch (currentKey) {
@@ -462,6 +461,60 @@ async function writeInfo(r, sortOrder = 'asc', sortBy = 'coins', maxPageSize = 1
                     })
                     break;
                 }
+                case 'things': {
+                    (() => {
+                        let characterList = value.dataset.value.split(',');
+                        let characterCounter = {};
+                        let base = document.createElement('div');
+                        let container = document.createElement('div');
+
+                        base.classList.add('selectedCharacterList');
+
+                        container.style.justifyContent = 'flex-start';
+
+                        for (let i = 0; i < characterList.length; i++) {
+                            if (!characterCounter[characterList[i]]) {
+                                characterCounter[characterList[i]] = 1;
+                            } else {
+                                characterCounter[characterList[i]] += 1;
+                            }
+                        }
+
+                        characterList = Object.keys(characterCounter);
+                        for (let i = 0; i < characterList.length; i++) {
+                            let base = document.createElement('div');
+                            let span = document.createElement('span');
+                            let counter = document.createElement('span');
+                            span.innerText = characterList[i];
+
+                            if (Object.values(characterCounter)[i] > 1) {
+                                counter.innerText = `${Object.values(characterCounter)[i]}`;
+                                counter.setAttribute('title', `代表该英灵有${Object.values(characterCounter)[i]}个`);
+                                span.appendChild(counter);
+                            }
+
+                            if (picList[characterList[i]]) {
+                                let img = document.createElement('div');
+                                img.classList.add('img');
+                                img.style.backgroundImage = `url('${picList[characterList[i]]}')`;
+                                base.appendChild(img);
+                            } else {
+                                span.style.marginLeft = '0';
+                            }
+
+                            base.appendChild(span);
+                            container.appendChild(base);
+                        }
+
+                        base.appendChild(container);
+                        value.appendChild(base);
+                    })();
+                    break;
+                }
+            }
+
+            if (currentKey != 'things') {
+                value.innerHTML = displayValue;
             }
 
             base.appendChild(title);
