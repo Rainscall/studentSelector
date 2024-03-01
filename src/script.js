@@ -7,6 +7,7 @@ let netCache = {
     lastStartsFrom: 0
 };
 let sortByCache = '';
+const stepLength = 25;
 
 function init() {
     removeElementsByClassName('tempElement');
@@ -325,10 +326,10 @@ async function openCharacterList() {
  * @param {Number} startsFrom 
  * @returns 
  */
-async function writeInfo(r, sortOrder = 'asc', sortBy = 'coins', maxPageSize = 100, startsFrom = 0) {
+async function writeInfo(r, sortOrder = 'asc', sortBy = 'coins', maxPageSize = stepLength, startsFrom = 0) {
     if (startsFrom > r.accounts.length) {
         createToast('到底了');
-        netCache.lastStartsFrom -= 100;
+        netCache.lastStartsFrom -= stepLength;
         return;
     }
 
@@ -389,8 +390,6 @@ async function writeInfo(r, sortOrder = 'asc', sortBy = 'coins', maxPageSize = 1
     })();
 
     r.accounts = sortByItems(r.accounts, sortBy, sortOrder);
-
-
 
     if (startsFrom + maxPageSize > r.accounts.length) {
         maxPageSize = r.accounts.length - startsFrom;
@@ -462,6 +461,7 @@ async function writeInfo(r, sortOrder = 'asc', sortBy = 'coins', maxPageSize = 1
                     break;
                 }
                 case 'things': {
+                    base.classList.add('heroList');
                     (() => {
                         let characterList = value.dataset.value.split(',');
                         let characterCounter = {};
@@ -534,11 +534,11 @@ async function writeInfo(r, sortOrder = 'asc', sortBy = 'coins', maxPageSize = 1
                     createToast('到顶了');
                     return;
                 }
-                netCache.lastStartsFrom -= 100;
-                writeInfo(netCache.respondCache, 'coins', 'desc', 100, netCache.lastStartsFrom);
+                netCache.lastStartsFrom -= stepLength;
+                writeInfo(netCache.respondCache, 'coins', 'desc', stepLength, netCache.lastStartsFrom);
             } else {
-                netCache.lastStartsFrom += 100;
-                writeInfo(netCache.respondCache, 'coins', 'desc', 100, netCache.lastStartsFrom);
+                netCache.lastStartsFrom += stepLength;
+                writeInfo(netCache.respondCache, 'coins', 'desc', stepLength, netCache.lastStartsFrom);
             }
         }
 

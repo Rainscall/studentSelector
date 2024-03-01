@@ -136,7 +136,7 @@ hr {
 }
 
 #infoArea .childPart>div {
-    max-width: 80%;
+    max-width: 100%;
     word-break: break-all;
     user-select: none;
 }
@@ -330,6 +330,23 @@ hr {
     background-position: center;
     background-repeat: no-repeat;
     background-size: cover;
+}
+
+.heroList {
+    display: flex;
+    flex-direction: column !important;
+}
+
+.heroList>:first-child {
+    width: 100%;
+    margin-right: 0 !important;
+    display: flex;
+}
+
+.heroList>:last-child>:first-child {
+    padding-left: 0;
+    padding-right: 0;
+    width: 100%;
 }
 
 .scrollBox {
