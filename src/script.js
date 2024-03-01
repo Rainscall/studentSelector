@@ -1,5 +1,5 @@
 "use strict"
-const apiEndpoint = 'https://studentselector-backend.colorspark.net';
+const apiEndpoint = 'https://backend.fgopy.com';
 let selectedCharacter = [];
 let netCache = {
     respondCache: undefined,
