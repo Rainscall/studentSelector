@@ -338,9 +338,12 @@ hr {
 }
 
 .heroList>:first-child {
-    width: 100%;
     margin-right: 0 !important;
     display: flex;
+}
+
+.heroList>div {
+    width: 100%;
 }
 
 .heroList>:last-child>:first-child {
