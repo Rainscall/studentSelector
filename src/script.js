@@ -169,7 +169,157 @@ function init() {
 
     })();
 }
-init();
+
+function initAdmin() {
+    function init() {
+        removeElementsByClassName('tempElement');
+        infoArea.classList.add('shadowBorder');
+        infoArea.innerHTML = '';
+        const infoList = [
+            ['访问密钥', 'token', 'text', '', {
+                'id': 'accessTokenInput',
+                'autocomplete': 'off'
+            }],
+            ['通过ID删除', 'id', 'number', 'delById', {
+                'step': 1,
+                'min': 1
+            }]
+        ];
+        for (let i = 0; i < infoList.length; i++) {
+            let base = document.createElement('div');
+            let title = document.createElement('div');
+            let value = document.createElement('div');
+            let form = document.createElement('form');
+            let input = document.createElement('input');
+            base.classList.add('childPart');
+            base.style.cursor = 'text';
+            title.innerText = infoList[i][0];
+
+            input.placeholder = infoList[i][1];
+            input.type = infoList[i][2];
+            input.required = 'required';
+
+            if (typeof infoList[i][4] == 'object') {
+                for (let j = 0; j < Object.keys(infoList[i][4]).length; j++) {
+                    const currentKey = Object.keys(infoList[i][4])[j];
+                    const currentValue = Object.values(infoList[i][4])[j];
+                    input.setAttribute(currentKey, currentValue);
+                }
+            }
+
+            base.addEventListener('click', () => {
+                input.focus();
+            });
+
+            form.onsubmit = (e) => {
+                e.preventDefault();
+                if (!input.value) {
+                    return;
+                }
+                let query = input.value.trim();
+
+                if (isPotentialSQLInjection(query)) {
+                    input.value = '';
+                    createToast(`非法输入`, 4300, '#FFF', '#840D23');
+                    return;
+                }
+
+                sendReq(query, infoList[i][3])
+                    .then(r => {
+                        switch (r) {
+                            case 'ACCESS DECLINE':
+                                createToast('密钥错误或权限不足', 4300, '#FFF', '#840D23');
+                                break;
+                            case 'NOT FOUND':
+                                createToast('未找到符合条件的项目', 4300, '#FFF', '#840D23');
+                                break;
+                            case 'SUCCESS':
+                                createToast('执行成功');
+                                input.value = '';
+                                break;
+                            case null: break;
+                            default:
+                                createToast('未知错误', 4300, '#FFF', '#840D23');
+                                break;
+                        }
+                    })
+            }
+
+            form.appendChild(input);
+            value.appendChild(form);
+            base.appendChild(title);
+            base.appendChild(value);
+            infoArea.appendChild(base);
+            if (i < infoList.length - 1) {
+                infoArea.appendChild(document.createElement('hr'));
+            }
+        }
+
+        infoArea.appendChild(document.createElement('hr'));
+        (() => {
+            let base = document.createElement('div');
+            let title = document.createElement('div');
+            let value = document.createElement('div');
+            base.classList.add('childPart');
+            value.classList.add('inlineSvgIcon');
+            title.innerText = '返回主页';
+            value.style.transform = 'translateY(-1px)';
+            value.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--!Font Awesome Free 6.5.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2024 Fonticons, Inc.--><path d="M384 32c35.3 0 64 28.7 64 64V416c0 35.3-28.7 64-64 64H64c-35.3 0-64-28.7-64-64V96C0 60.7 28.7 32 64 32H384zM160 144c-13.3 0-24 10.7-24 24s10.7 24 24 24h94.1L119 327c-9.4 9.4-9.4 24.6 0 33.9s24.6 9.4 33.9 0l135-135V328c0 13.3 10.7 24 24 24s24-10.7 24-24V168c0-13.3-10.7-24-24-24H160z"/></svg>';
+
+            base.addEventListener('click', () => {
+                location.hash = '';
+            })
+
+            base.appendChild(title);
+            base.appendChild(value);
+            infoArea.appendChild(base);
+        })();
+
+        if (localStorage.getItem('accessToken')) {
+            accessTokenInput.value = localStorage.getItem('accessToken');
+        }
+
+        accessTokenInput.addEventListener('input', function () {
+            localStorage.setItem('accessToken', accessTokenInput.value);
+        });
+    }
+    init();
+
+    async function sendReq(query = '1.1.1.1', type) {
+        if (!type) {
+            return null;
+        }
+        createToast('正在执行', -1, '#FFF', '#414141', 'temp-search-loadingToast');
+        try {
+            const r = await fetch(`${apiEndpoint}/?${type}=${encodeURIComponent(query)}&accessToken=${accessTokenInput.value}`).then(r => r.json());
+            removeElementsByClassName('temp-search-loadingToast', 500);
+
+            return r.status;
+
+        } catch (error) {
+            removeElementsByClassName('temp-search-loadingToast');
+            createToast(`请求失败\n${error}`, 4300, '#FFF', '#840D23');
+        }
+    }
+
+
+}
+
+//首次打开时判断hashtag
+if (location.hash === '#admin') {
+    initAdmin();
+} else {
+    init();
+}
+
+//监听hashtag变化
+window.addEventListener('hashchange', function () {
+    if (location.hash === '#admin') {
+        initAdmin();
+    } else {
+        init();
+    }
+});
 
 
 async function openCharacterList() {
