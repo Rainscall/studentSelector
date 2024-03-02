@@ -16,11 +16,11 @@ function init() {
     infoArea.classList.add('shadowBorder');
     infoArea.innerHTML = '';
     const infoList = [
-        ['圣晶石', '大于等于...', 'number', 'coins', {
+        ['圣晶石', '大于等于', 'number', 'coins', {
             'step': 1,
             'min': 1
         }],
-        ['搜索', '名称或外号', 'text', 'things']
+        ['搜索', '名称或外号(逗号分隔多个)', 'text', 'things']
     ];
     for (let i = 0; i < infoList.length; i++) {
         let base = document.createElement('div');
@@ -58,6 +58,11 @@ function init() {
             if (isPotentialSQLInjection(query)) {
                 input.value = '';
                 createToast(`非法输入`, 4300, '#FFF', '#840D23');
+                return;
+            }
+
+            if (query === 'adminMode') {
+                location.hash = 'admin';
                 return;
             }
 
@@ -737,11 +742,31 @@ async function writeInfo(r, sortOrder = 'asc', sortBy = 'coins', maxPageSize = s
 
 async function doSearch(query = '1.1.1.1', type) {
     try {
-        //检查是否是外号，如果带‘,’就不检查
-        if (query.indexOf(',') === 0 || aliasToName(query) !== false) {
+        if (query.indexOf('，') !== 0) {
+            query = query.replace(/，/g, ',');//全角逗号替换成半角
+        }
+        if (query.indexOf(',') !== 0) {
+            let showRedircted = false;
+            let queryList = query.split(',');
+            query = '';
+            for (let i = 0; i < queryList.length; i++) {
+                if (aliasToName(queryList[i]) !== false) {
+                    queryList[i] = aliasToName(queryList[i]);
+                    showRedircted = true;
+                }
+                query += queryList[i];
+                if (i !== queryList.length - 1) {
+                    query += ',';
+                }
+            }
+            if (showRedircted) {
+                createToast(`重定向至 ${query}`);
+            }
+        } else if (aliasToName(query) !== false) {
             query = aliasToName(query);
             createToast(`重定向至 ${query}`);
         }
+
         const r = await fetch(`${apiEndpoint}/?${type}=${encodeURIComponent(query)}`).then(r => r.json());
         removeElementsByClassName('temp-search-loadingToast', 500);
         if (r.status === 'NOT FOUND') {
