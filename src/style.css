@@ -435,6 +435,23 @@ hr {
     display: none;
 }
 
+.sortDialog .addContainer>div {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    word-break: keep-all;
+}
+
+.sortDialog .addContainer>div input {
+    background: none;
+    outline: none;
+    border: none;
+    width: 100%;
+    height: fit-content;
+    margin: 0 0.625rem;
+    text-align: right;
+}
+
 .pageSwitcherBase {
     display: flex;
     justify-content: center;

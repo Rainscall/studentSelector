@@ -135,7 +135,7 @@ function init() {
                     }
                     queryStr += str;
                 }
-                createToast('正在查询', -1, '#FFF', '#414141', 'temp-search-loadingToast');
+                createToast('查询中', -1, '#FFF', '#414141', 'temp-search-loadingToast');
                 doSearch(queryStr, 'things')
                     .then(r => {
                         if (r == 'NOT FOUND') {
@@ -247,7 +247,7 @@ function initAdmin() {
                                 createToast('未知错误', 4300, '#FFF', '#840D23');
                                 break;
                         }
-                    })
+                    });
             }
 
             form.appendChild(input);
@@ -259,6 +259,24 @@ function initAdmin() {
                 infoArea.appendChild(document.createElement('hr'));
             }
         }
+
+        infoArea.appendChild(document.createElement('hr'));
+        (() => {
+            let base = document.createElement('div');
+            let title = document.createElement('div');
+            let value = document.createElement('div');
+            base.classList.add('childPart');
+            value.classList.add('inlineSvgIcon');
+            title.innerText = '添加数据';
+            value.style.transform = 'translateY(-1px)';
+            value.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--!Font Awesome Free 6.5.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2024 Fonticons, Inc.--><path d="M384 32c35.3 0 64 28.7 64 64V416c0 35.3-28.7 64-64 64H64c-35.3 0-64-28.7-64-64V96C0 60.7 28.7 32 64 32H384zM160 144c-13.3 0-24 10.7-24 24s10.7 24 24 24h94.1L119 327c-9.4 9.4-9.4 24.6 0 33.9s24.6 9.4 33.9 0l135-135V328c0 13.3 10.7 24 24 24s24-10.7 24-24V168c0-13.3-10.7-24-24-24H160z"/></svg>';
+
+            base.addEventListener('click', openAddMenu);
+
+            base.appendChild(title);
+            base.appendChild(value);
+            infoArea.appendChild(base);
+        })();
 
         infoArea.appendChild(document.createElement('hr'));
         (() => {
@@ -307,7 +325,141 @@ function initAdmin() {
         }
     }
 
+    function openAddMenu() {
+        let dialog = document.createElement('dialog');
+        let base = document.createElement('div');
+        let title = document.createElement('h2');
+        let addContainer = document.createElement('div');
+        let apply = document.createElement('div');
 
+        const method = {
+            '编号': {
+                'name': 'id',
+                'attribute': {
+                    'type': 'number',
+                    'autocomplete': 'off',
+                    'placeholder': '数字',
+                    'required': 'required'
+                }
+            },
+            '圣晶石': {
+                'name': 'coins',
+                'attribute': {
+                    'type': 'number',
+                    'autocomplete': 'off',
+                    'placeholder': '数字',
+                    'required': 'required'
+                }
+            },
+            '呼符': {
+                'name': 'tickets',
+                'attribute': {
+                    'type': 'number',
+                    'autocomplete': 'off',
+                    'placeholder': '数字',
+                    'required': 'required'
+                }
+            },
+            '英灵': {
+                'name': 'things',
+                'attribute': {
+                    'type': 'text',
+                    'autocomplete': 'off',
+                    'placeholder': '字符串',
+                    'required': 'required'
+                }
+            }
+        }
+
+        dialog.classList.add('sortDialog');
+        dialog.classList.add('shadowBorder');
+        base.classList.add('basePart');
+        apply.classList.add('apply');
+        addContainer.classList.add('selectorContainer');
+        addContainer.classList.add('addContainer');
+
+        for (let i = 0; i < Object.keys(method).length; i++) {
+            let base = document.createElement('div');
+            let option = document.createElement('input');
+            option.type = Object.values(method)[i].attribute.type;
+
+            for (let j = 0; j < Object.keys(Object.values(method)[i].attribute).length; j++) {
+                option.setAttribute(Object.keys(Object.values(method)[i].attribute)[j], Object.values(Object.values(method)[i].attribute)[j])
+            }
+
+            let label = document.createElement('label');
+            label.setAttribute('for', `temp-addDialog-${Object.values(method)[i].name}`);
+            label.innerText = Object.keys(method)[i];
+            label.dataset.value = Object.values(method)[i].name;
+
+            option.id = `temp-addDialog-${Object.values(method)[i].name}`;
+            option.name = 'addDialogInput';
+            option.dataset.value = Object.values(method)[i].name;
+
+            base.appendChild(label);
+            base.appendChild(option);
+            addContainer.appendChild(base);
+
+            base.addEventListener('click', () => {
+                option.focus();
+            });
+        }
+
+        title.innerText = '添加数据';
+        apply.innerText = '确定';
+
+        apply.addEventListener('click', () => {
+            const inputs = document.getElementsByName('addDialogInput');
+            let subData = {};
+
+            for (let i = 0; i < inputs.length; i++) {
+                if (inputs[i].value.length < 1) {
+                    createToast('不予添加\n原因：存在空项', 4300, '#FFF', '#840D23');
+                    dialog.close();
+                    dialog.remove();
+                    return;
+                }
+
+                if (isPotentialSQLInjection(inputs[i].value) === true) {
+                    createToast('不予添加\n原因：检查到SQL注入', 4300, '#FFF', '#840D23');
+                    dialog.close();
+                    dialog.remove();
+                    return;
+                }
+                subData[inputs[i].dataset.value] = inputs[i].value;
+            }
+            console.log(subData);
+
+            sendReq(JSON.stringify(subData), 'add')
+                .then(r => {
+                    switch (r) {
+                        case 'ACCESS DECLINE':
+                            createToast('密钥错误或权限不足', 4300, '#FFF', '#840D23');
+                            break;
+                        case 'FOUND THE SAME ID':
+                            createToast('添加失败\n原因：检测到ID重复', 4300, '#FFF', '#840D23');
+                            break;
+                        case 'SUCCESS':
+                            createToast('执行成功');
+                            break;
+                        default:
+                            createToast('未知错误', 4300, '#FFF', '#840D23');
+                            break;
+                    }
+                });
+
+            dialog.close();
+            dialog.remove();
+        });
+
+        base.appendChild(title);
+        base.appendChild(document.createElement('hr'));
+        base.appendChild(addContainer);
+        base.appendChild(apply);
+        dialog.appendChild(base);
+        document.body.appendChild(dialog);
+        dialog.showModal();
+    }
 }
 
 //首次打开时判断hashtag
@@ -321,6 +473,7 @@ if (location.hash === '#admin') {
 window.addEventListener('hashchange', function () {
     if (location.hash === '#admin') {
         initAdmin();
+
     } else {
         init();
     }
@@ -345,7 +498,7 @@ async function openCharacterList() {
                 }
                 queryStr += str;
             }
-            createToast('正在查询', -1, '#FFF', '#414141', 'temp-search-loadingToast');
+            createToast('查询中', -1, '#FFF', '#414141', 'temp-search-loadingToast');
             doSearch(queryStr, 'things')
                 .then(r => {
                     if (r == 'NOT FOUND') {
