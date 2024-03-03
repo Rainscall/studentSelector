@@ -312,7 +312,7 @@ function initAdmin() {
         if (!type) {
             return null;
         }
-        createToast('正在执行', -1, '#FFF', '#414141', 'temp-search-loadingToast');
+        createToast('执行中', -1, '#FFF', '#414141', 'temp-search-loadingToast');
         try {
             const r = await fetch(`${apiEndpoint}/?${type}=${encodeURIComponent(query)}&accessToken=${accessTokenInput.value}`).then(r => r.json());
             removeElementsByClassName('temp-search-loadingToast', 500);
@@ -339,7 +339,8 @@ function initAdmin() {
                     'type': 'number',
                     'autocomplete': 'off',
                     'placeholder': '数字',
-                    'required': 'required'
+                    'required': 'required',
+                    'min': '1'
                 }
             },
             '圣晶石': {
@@ -348,7 +349,8 @@ function initAdmin() {
                     'type': 'number',
                     'autocomplete': 'off',
                     'placeholder': '数字',
-                    'required': 'required'
+                    'required': 'required',
+                    'min': '1'
                 }
             },
             '呼符': {
@@ -357,7 +359,8 @@ function initAdmin() {
                     'type': 'number',
                     'autocomplete': 'off',
                     'placeholder': '数字',
-                    'required': 'required'
+                    'required': 'required',
+                    'min': '1'
                 }
             },
             '英灵': {
@@ -420,6 +423,13 @@ function initAdmin() {
                     return;
                 }
 
+                if (inputs[i].type === 'number' && Number(inputs[i].value) < 0) {
+                    createToast('不予添加\n原因：存在负数', 4300, '#FFF', '#840D23');
+                    dialog.close();
+                    dialog.remove();
+                    return;
+                }
+
                 if (isPotentialSQLInjection(inputs[i].value) === true) {
                     createToast('不予添加\n原因：检查到SQL注入', 4300, '#FFF', '#840D23');
                     dialog.close();
@@ -428,7 +438,6 @@ function initAdmin() {
                 }
                 subData[inputs[i].dataset.value] = inputs[i].value;
             }
-            console.log(subData);
 
             sendReq(JSON.stringify(subData), 'add')
                 .then(r => {
@@ -452,9 +461,18 @@ function initAdmin() {
             dialog.remove();
         });
 
+        dialog.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') {
+                e.preventDefault();
+                dialog.close();
+                dialog.remove();
+            }
+        });
+
         base.appendChild(title);
         base.appendChild(document.createElement('hr'));
         base.appendChild(addContainer);
+        base.appendChild(document.createElement('hr'));
         base.appendChild(apply);
         dialog.appendChild(base);
         document.body.appendChild(dialog);
