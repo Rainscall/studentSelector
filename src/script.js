@@ -40,7 +40,7 @@ const i18nAssets = {
             'id': '编号',
             'tickets': '呼符',
             'coins': '圣晶石',
-            'servant': '英灵'
+            'things': '英灵'
         },
         'sortMenu': {
             'title': '排序方法',
@@ -50,7 +50,8 @@ const i18nAssets = {
         },
         'others': {
             'copied': '已复制',
-            'confirm': '确定'
+            'confirm': '确定',
+            'consoleWarnMessage': '请不要在此运行任何你不能理解的代码，否则将使你的信息陷入危险之中'
         }
     },
     'en-US': {
@@ -83,7 +84,7 @@ const i18nAssets = {
             'id': 'ID',
             'tickets': 'Summon Ticket',
             'coins': 'Saint Quartz',
-            'servant': 'Servant'
+            'things': 'Servant'
         },
         'sortMenu': {
             'title': 'Sort by...',
@@ -93,7 +94,8 @@ const i18nAssets = {
         },
         'others': {
             'copied': 'Copied',
-            'confirm': 'Confirm'
+            'confirm': 'Confirm',
+            'consoleWarnMessage': `Please don't run any code here that you don't understand, or you'll put your information at risk`
         }
     }
 }
@@ -932,7 +934,7 @@ async function writeInfo(r, sortOrder = 'asc', sortBy = 'coins', maxPageSize = s
                 'id': languageAssets.searchResult.id,
                 'tickets': languageAssets.searchResult.tickets,
                 'coins': languageAssets.searchResult.coins,
-                'things': languageAssets.searchResult.servant
+                'things': languageAssets.searchResult.things
             }
             let displayValue = '';
             let base = document.createElement('div');
@@ -2113,3 +2115,5 @@ const aliasList = {
         '大王'
     ]
 }
+
+console.log(`%c ${languageAssets.others.consoleWarnMessage}`, 'color: red; font-size: xx-large; font-family: Arial, Helvetica, sans-serif; background-color: yellow;');
