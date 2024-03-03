@@ -24,7 +24,33 @@ const i18nAssets = {
             'searchNotFound': '未找到符合条件的项目',
             'searchResultCount': '条被找到',
             'zeroSelected': '至少需要选择一个英灵',
-            'selectedServant': '已选择以下英灵'
+            'selectedServant': '已选择以下英灵',
+            'noPrev': '到顶了',
+            'noNext': '到底了',
+            'cleared': '清除完成'
+        },
+        'toolbar': {
+            'back': '返回',
+            'search': '查询',
+            'top': '顶部',
+            'clear': '清空',
+            'sort': '排序'
+        },
+        'searchResult': {
+            'id': '编号',
+            'tickets': '呼符',
+            'coins': '圣晶石',
+            'servant': '英灵'
+        },
+        'sortMenu': {
+            'title': '排序方法',
+            'coins': '圣晶石',
+            'tickets': '呼符',
+            'id': '编号'
+        },
+        'others': {
+            'copied': '已复制',
+            'confirm': '确定'
         }
     },
     'en-US': {
@@ -41,7 +67,33 @@ const i18nAssets = {
             'searchNotFound': 'No matching items found',
             'searchResultCount': 'items found',
             'zeroSelected': 'At least one servant needs to be selected',
-            'selectedServant': 'Selected servant'
+            'selectedServant': 'Selected servant',
+            'noPrev': 'This is the first page',
+            'noNext': 'This is the last page',
+            'cleared': 'Cleared'
+        },
+        'toolbar': {
+            'back': 'Back',
+            'search': 'Search',
+            'top': 'Top',
+            'clear': 'Clear',
+            'sort': 'Sort',
+        },
+        'searchResult': {
+            'id': 'ID',
+            'tickets': 'Summon Ticket',
+            'coins': 'Saint Quartz',
+            'servant': 'Servant'
+        },
+        'sortMenu': {
+            'title': 'Sort by...',
+            'coins': 'Saint Quartz',
+            'tickets': 'Summon Ticket',
+            'id': 'ID'
+        },
+        'others': {
+            'copied': 'Copied',
+            'confirm': 'Confirm'
         }
     }
 }
@@ -669,22 +721,22 @@ async function openCharacterList() {
 
         const functionList = [
             {
-                'name': '返回',
+                'name': languageAssets.toolbar.back,
                 'iconSvg': '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--!Font Awesome Free 6.5.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2024 Fonticons, Inc.--><path d="M9.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l160 160c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L109.2 288 416 288c17.7 0 32-14.3 32-32s-14.3-32-32-32l-306.7 0L214.6 118.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-160 160z"/></svg>',
                 'callback': 'init'
             },
             {
-                'name': '查询',
+                'name': languageAssets.toolbar.search,
                 'iconSvg': '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--!Font Awesome Free 6.5.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2024 Fonticons, Inc.--><path d="M416 208c0 45.9-14.9 88.3-40 122.7L502.6 457.4c12.5 12.5 12.5 32.8 0 45.3s-32.8 12.5-45.3 0L330.7 376c-34.4 25.2-76.8 40-122.7 40C93.1 416 0 322.9 0 208S93.1 0 208 0S416 93.1 416 208zM208 352a144 144 0 1 0 0-288 144 144 0 1 0 0 288z"/></svg>',
                 'callback': 'quickQuery'
             },
             {
-                'name': '顶部',
+                'name': languageAssets.toolbar.top,
                 'iconSvg': '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--!Font Awesome Free 6.5.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2024 Fonticons, Inc.--><path d="M246.6 41.4c-12.5-12.5-32.8-12.5-45.3 0l-160 160c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L224 109.3 361.4 246.6c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3l-160-160zm160 352l-160-160c-12.5-12.5-32.8-12.5-45.3 0l-160 160c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L224 301.3 361.4 438.6c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3z"/></svg>',
                 'callback': `(()=>{infoArea.children[0].scrollIntoView({behavior: "smooth"});})`
             },
             {
-                'name': '清空',
+                'name': languageAssets.toolbar.clear,
                 'iconSvg': '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--!Font Awesome Free 6.5.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2024 Fonticons, Inc.--><path d="M135.2 17.7C140.6 6.8 151.7 0 163.8 0H284.2c12.1 0 23.2 6.8 28.6 17.7L320 32h96c17.7 0 32 14.3 32 32s-14.3 32-32 32H32C14.3 96 0 81.7 0 64S14.3 32 32 32h96l7.2-14.3zM32 128H416V448c0 35.3-28.7 64-64 64H96c-35.3 0-64-28.7-64-64V128zm96 64c-8.8 0-16 7.2-16 16V432c0 8.8 7.2 16 16 16s16-7.2 16-16V208c0-8.8-7.2-16-16-16zm96 0c-8.8 0-16 7.2-16 16V432c0 8.8 7.2 16 16 16s16-7.2 16-16V208c0-8.8-7.2-16-16-16zm96 0c-8.8 0-16 7.2-16 16V432c0 8.8 7.2 16 16 16s16-7.2 16-16V208c0-8.8-7.2-16-16-16z"/></svg>',
                 'callback': 'clearSelectedCharacter'
             }
@@ -796,7 +848,7 @@ async function openCharacterList() {
  */
 async function writeInfo(r, sortOrder = 'asc', sortBy = 'coins', maxPageSize = stepLength, startsFrom = 0) {
     if (startsFrom >= r.accounts.length) {
-        createToast('到底了');
+        createToast(languageAssets.toast.noNext);
         netCache.lastStartsFrom -= stepLength;
         return;
     }
@@ -807,18 +859,18 @@ async function writeInfo(r, sortOrder = 'asc', sortBy = 'coins', maxPageSize = s
     (() => {
         const functionList = [
             {
-                'name': '返回',
+                'name': languageAssets.toolbar.back,
                 'iconSvg': '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--!Font Awesome Free 6.5.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2024 Fonticons, Inc.--><path d="M9.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l160 160c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L109.2 288 416 288c17.7 0 32-14.3 32-32s-14.3-32-32-32l-306.7 0L214.6 118.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-160 160z"/></svg>',
                 'callback': 'init'
             },
             {
-                'name': '顶部',
+                'name': languageAssets.toolbar.top,
                 'iconSvg': '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--!Font Awesome Free 6.5.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2024 Fonticons, Inc.--><path d="M246.6 41.4c-12.5-12.5-32.8-12.5-45.3 0l-160 160c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L224 109.3 361.4 246.6c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3l-160-160zm160 352l-160-160c-12.5-12.5-32.8-12.5-45.3 0l-160 160c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L224 301.3 361.4 438.6c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3z"/></svg>',
                 'callback': `(()=>{infoArea.children[0].scrollIntoView({behavior: "smooth"});
                 })`
             },
             {
-                'name': '排序',
+                'name': languageAssets.toolbar.sort,
                 'iconSvg': '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512"><!--!Font Awesome Free 6.5.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2024 Fonticons, Inc.--><path d="M151.6 42.4C145.5 35.8 137 32 128 32s-17.5 3.8-23.6 10.4l-88 96c-11.9 13-11.1 33.3 2 45.2s33.3 11.1 45.2-2L96 146.3V448c0 17.7 14.3 32 32 32s32-14.3 32-32V146.3l32.4 35.4c11.9 13 32.2 13.9 45.2 2s13.9-32.2 2-45.2l-88-96zM320 480h32c17.7 0 32-14.3 32-32s-14.3-32-32-32H320c-17.7 0-32 14.3-32 32s14.3 32 32 32zm0-128h96c17.7 0 32-14.3 32-32s-14.3-32-32-32H320c-17.7 0-32 14.3-32 32s14.3 32 32 32zm0-128H480c17.7 0 32-14.3 32-32s-14.3-32-32-32H320c-17.7 0-32 14.3-32 32s14.3 32 32 32zm0-128H544c17.7 0 32-14.3 32-32s-14.3-32-32-32H320c-17.7 0-32 14.3-32 32s14.3 32 32 32z"/></svg>',
                 'callback': 'openSortMenu'
             }
@@ -877,10 +929,10 @@ async function writeInfo(r, sortOrder = 'asc', sortBy = 'coins', maxPageSize = s
             let currentValue = String(Object.values(infoList)[i]);
             const currentKey = Object.keys(infoList)[i];
             const displayKey = {
-                'id': '编号',
-                'tickets': '呼符',
-                'coins': '圣晶石',
-                'things': '英灵'
+                'id': languageAssets.searchResult.id,
+                'tickets': languageAssets.searchResult.tickets,
+                'coins': languageAssets.searchResult.coins,
+                'things': languageAssets.searchResult.servant
             }
             let displayValue = '';
             let base = document.createElement('div');
@@ -909,7 +961,7 @@ async function writeInfo(r, sortOrder = 'asc', sortBy = 'coins', maxPageSize = s
             switch (currentKey) {
                 case 'id': {
                     base.addEventListener('click', () => {
-                        value.innerText = '已复制';
+                        value.innerText = languageAssets.others.copied;
                         const textArea = document.createElement('textArea')
                         textArea.value = value.dataset.value;
                         textArea.style.width = 0
@@ -999,7 +1051,7 @@ async function writeInfo(r, sortOrder = 'asc', sortBy = 'coins', maxPageSize = s
         function changePage(action) {
             if (action === 'prev') {
                 if (netCache.lastStartsFrom === 0) {
-                    createToast('到顶了');
+                    createToast(languageAssets.toast.noPrev);
                     return;
                 }
                 netCache.lastStartsFrom -= stepLength;
@@ -1187,7 +1239,7 @@ function clearSelectedCharacter() {
         document.getElementById(`characterSelector-${selectedCharacter[i]}`).classList.remove('selected');
     }
     selectedCharacter = [];
-    createToast('清除完成', 2640);
+    createToast(languageAssets.toast.cleared, 2640);
 }
 
 function getAverageRGB(imgEl) {
@@ -1307,7 +1359,7 @@ function openSortMenu() {
         option.type = 'radio';
         let label = document.createElement('label');
         label.setAttribute('for', `temp-sortSelector-${Object.keys(method)[i]}`);
-        label.innerText = Object.keys(method)[i];
+        label.innerText = languageAssets.sortMenu[Object.values(method)[i]];
         label.dataset.value = Object.keys(method)[i];
 
         option.id = `temp-sortSelector-${Object.keys(method)[i]}`;
@@ -1341,8 +1393,8 @@ function openSortMenu() {
         }
     }
 
-    title.innerText = '排序方法';
-    apply.innerText = '确定';
+    title.innerText = languageAssets.sortMenu.title;
+    apply.innerText = languageAssets.others.confirm;
 
     apply.addEventListener('click', () => {
         let selected = method[document.querySelector('.selectorContainer>.selected>label').dataset.value];
