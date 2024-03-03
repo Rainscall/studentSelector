@@ -1,5 +1,5 @@
 "use strict"
-const apiEndpoint = 'https://backend.fgopy.com';
+const apiEndpoint = 'http://88.151.33.138:3000';
 let selectedCharacter = [];
 let netCache = {
     respondCache: undefined,
@@ -269,9 +269,36 @@ function initAdmin() {
             value.classList.add('inlineSvgIcon');
             title.innerText = '添加数据';
             value.style.transform = 'translateY(-1px)';
-            value.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--!Font Awesome Free 6.5.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2024 Fonticons, Inc.--><path d="M384 32c35.3 0 64 28.7 64 64V416c0 35.3-28.7 64-64 64H64c-35.3 0-64-28.7-64-64V96C0 60.7 28.7 32 64 32H384zM160 144c-13.3 0-24 10.7-24 24s10.7 24 24 24h94.1L119 327c-9.4 9.4-9.4 24.6 0 33.9s24.6 9.4 33.9 0l135-135V328c0 13.3 10.7 24 24 24s24-10.7 24-24V168c0-13.3-10.7-24-24-24H160z"/></svg>';
+            value.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--!Font Awesome Free 6.5.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2024 Fonticons, Inc.--><path d="M64 80c-8.8 0-16 7.2-16 16V416c0 8.8 7.2 16 16 16H384c8.8 0 16-7.2 16-16V96c0-8.8-7.2-16-16-16H64zM0 96C0 60.7 28.7 32 64 32H384c35.3 0 64 28.7 64 64V416c0 35.3-28.7 64-64 64H64c-35.3 0-64-28.7-64-64V96zM200 344V280H136c-13.3 0-24-10.7-24-24s10.7-24 24-24h64V168c0-13.3 10.7-24 24-24s24 10.7 24 24v64h64c13.3 0 24 10.7 24 24s-10.7 24-24 24H248v64c0 13.3-10.7 24-24 24s-24-10.7-24-24z"/></svg>';
 
             base.addEventListener('click', openAddMenu);
+
+            base.appendChild(title);
+            base.appendChild(value);
+            infoArea.appendChild(base);
+        })();
+
+        infoArea.appendChild(document.createElement('hr'));
+        (() => {
+            let base = document.createElement('div');
+            let title = document.createElement('div');
+            let value = document.createElement('div');
+            let fileInput = document.createElement('input');
+            fileInput.type = 'file';
+            fileInput.accept = 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet';
+            base.classList.add('childPart');
+            value.classList.add('inlineSvgIcon');
+            title.innerText = '从表格导入';
+            value.style.transform = 'translateY(-1px)';
+            value.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--!Font Awesome Free 6.5.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2024 Fonticons, Inc.--><path d="M64 256V160H224v96H64zm0 64H224v96H64V320zm224 96V320H448v96H288zM448 256H288V160H448v96zM64 32C28.7 32 0 60.7 0 96V416c0 35.3 28.7 64 64 64H448c35.3 0 64-28.7 64-64V96c0-35.3-28.7-64-64-64H64z"/></svg>';
+
+            base.addEventListener('click', () => {
+                fileInput.click();
+            });
+
+            fileInput.addEventListener('change', () => {
+                handleImportFromXlsx(fileInput);
+            });
 
             base.appendChild(title);
             base.appendChild(value);
@@ -287,7 +314,7 @@ function initAdmin() {
             value.classList.add('inlineSvgIcon');
             title.innerText = '返回主页';
             value.style.transform = 'translateY(-1px)';
-            value.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--!Font Awesome Free 6.5.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2024 Fonticons, Inc.--><path d="M384 32c35.3 0 64 28.7 64 64V416c0 35.3-28.7 64-64 64H64c-35.3 0-64-28.7-64-64V96C0 60.7 28.7 32 64 32H384zM160 144c-13.3 0-24 10.7-24 24s10.7 24 24 24h94.1L119 327c-9.4 9.4-9.4 24.6 0 33.9s24.6 9.4 33.9 0l135-135V328c0 13.3 10.7 24 24 24s24-10.7 24-24V168c0-13.3-10.7-24-24-24H160z"/></svg>';
+            value.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512"><!--!Font Awesome Free 6.5.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2024 Fonticons, Inc.--><path d="M575.8 255.5c0 18-15 32.1-32 32.1h-32l.7 160.2c0 2.7-.2 5.4-.5 8.1V472c0 22.1-17.9 40-40 40H456c-1.1 0-2.2 0-3.3-.1c-1.4 .1-2.8 .1-4.2 .1H416 392c-22.1 0-40-17.9-40-40V448 384c0-17.7-14.3-32-32-32H256c-17.7 0-32 14.3-32 32v64 24c0 22.1-17.9 40-40 40H160 128.1c-1.5 0-3-.1-4.5-.2c-1.2 .1-2.4 .2-3.6 .2H104c-22.1 0-40-17.9-40-40V360c0-.9 0-1.9 .1-2.8V287.6H32c-18 0-32-14-32-32.1c0-9 3-17 10-24L266.4 8c7-7 15-8 22-8s15 2 21 7L564.8 231.5c8 7 12 15 11 24z"/></svg>';
 
             base.addEventListener('click', () => {
                 location.hash = '';
@@ -478,6 +505,77 @@ function initAdmin() {
         document.body.appendChild(dialog);
         dialog.showModal();
     }
+
+    function handleImportFromXlsx(element) {
+        const file = element.files[0];
+        element.value = '';
+
+        if (file) {
+            const reader = new FileReader();
+
+            reader.onload = (e) => {
+                try {
+                    const base64Data = e.target.result.split(',')[1]; // Extracting the Base64 data
+                    const workbook = XLSX.read(atob(base64Data), { type: 'binary' });
+                    const sheetName = workbook.SheetNames[0];
+                    const sheet = workbook.Sheets[sheetName];
+                    const dataArray = XLSX.utils.sheet_to_json(sheet, { header: 1 });
+
+                    let data = {
+                        title: dataArray[0],
+                        body: []
+                    }
+
+                    for (let i = 1; i < dataArray.length; i++) {
+                        data.body[i - 1] = dataArray[i];
+                    }
+
+                    (async () => {
+                        createToast('执行中', -1, '#FFF', '#414141', 'temp-search-loadingToast');
+                        try {
+                            const r = await fetch(`${apiEndpoint}/?massImport=true&accessToken=${accessTokenInput.value}`,
+                                {
+                                    method: 'POST',
+                                    headers: {
+                                        'Content-Type': "application/json"
+                                    },
+                                    body: JSON.stringify(data)
+                                })
+                                .then(r => r.json());
+                                
+                            switch (r.status) {
+                                case 'ACCESS DECLINE':
+                                    createToast('密钥错误或权限不足', 4300, '#FFF', '#840D23');
+                                    break;
+                                case 'FOUND THE SAME ID':
+                                    createToast('添加失败\n原因：检测到ID重复', 4300, '#FFF', '#840D23');
+                                    break;
+                                case 'SUCCESS':
+                                    createToast('执行成功');
+                                    break;
+                                default:
+                                    createToast('未知错误', 4300, '#FFF', '#840D23');
+                                    break;
+                            }
+                            removeElementsByClassName('temp-search-loadingToast', 500);
+                        } catch (error) {
+                            removeElementsByClassName('temp-search-loadingToast');
+                            createToast(`请求失败\n${error}`, 4300, '#FFF', '#840D23');
+                        }
+                    })();
+                } catch (error) {
+                    createToast(`发生错误：\n${error}`, 4300, '#FFF', '#840D23');
+                    return;
+                }
+
+            };
+
+            reader.readAsDataURL(file);
+        } else {
+            console.error('No file selected.');
+        }
+    }
+
 }
 
 //首次打开时判断hashtag
