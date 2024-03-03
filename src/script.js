@@ -9,6 +9,50 @@ let netCache = {
 let sortByCache = '';
 const stepLength = 25;
 
+const i18nAssets = {
+    'zh-CN': {
+        'homePage': {
+            'coins': '圣晶石',
+            'coinsPlaceholder': '大于等于',
+            'search': '搜索',
+            'searchPlaceholder': '名称或外号 (逗号分隔多个)',
+            'servantList': '英灵列表'
+        },
+        'toast': {
+            'sqlInject': '非法输入',
+            'querying': '正在查询',
+            'searchNotFound': '未找到符合条件的项目',
+            'searchResultCount': '条被找到',
+            'zeroSelected': '至少需要选择一个英灵',
+            'selectedServant': '已选择以下英灵'
+        }
+    },
+    'en-US': {
+        'homePage': {
+            'coins': 'Saint Quartz',
+            'coinsPlaceholder': 'more than',
+            'search': 'search',
+            'searchPlaceholder': 'name or alias (use comma to split)',
+            'servantList': 'servant list'
+        },
+        'toast': {
+            'sqlInject': 'Invalid input',
+            'querying': 'Querying',
+            'searchNotFound': 'No matching items found',
+            'searchResultCount': 'items found',
+            'zeroSelected': 'At least one servant needs to be selected',
+            'selectedServant': 'Selected servant'
+        }
+    }
+}
+
+let languageAssets = {};
+if (navigator.language.startsWith('zh')) {
+    languageAssets = i18nAssets['zh-CN'];
+} else {
+    languageAssets = i18nAssets['en-US'];
+}
+
 function init() {
     removeElementsByClassName('tempElement');
     sortByCache = '';
@@ -16,11 +60,11 @@ function init() {
     infoArea.classList.add('shadowBorder');
     infoArea.innerHTML = '';
     const infoList = [
-        ['圣晶石', '大于等于', 'number', 'coins', {
+        [languageAssets.homePage.coins, languageAssets.homePage.coinsPlaceholder, 'number', 'coins', {
             'step': 1,
             'min': 1
         }],
-        ['搜索', '名称或外号(逗号分隔多个)', 'text', 'things']
+        [languageAssets.homePage.search, languageAssets.homePage.searchPlaceholder, 'text', 'things']
     ];
     for (let i = 0; i < infoList.length; i++) {
         let base = document.createElement('div');
@@ -57,7 +101,7 @@ function init() {
 
             if (isPotentialSQLInjection(query)) {
                 input.value = '';
-                createToast(`非法输入`, 4300, '#FFF', '#840D23');
+                createToast(languageAssets.toast.sqlInject, 4300, '#FFF', '#840D23');
                 return;
             }
 
@@ -66,12 +110,12 @@ function init() {
                 return;
             }
 
-            createToast('正在查询', -1, '#FFF', '#414141', 'temp-search-loadingToast');
+            createToast(languageAssets.toast.querying, -1, '#FFF', '#414141', 'temp-search-loadingToast');
 
             doSearch(query, infoList[i][3])
                 .then(r => {
                     if (r == 'NOT FOUND') {
-                        createToast('未找到符合条件的项目', 4300, '#FFF', '#840D23');
+                        createToast(languageAssets.toast.searchNotFound, 4300, '#FFF', '#840D23');
                         input.value = '';
                     }
                 })
@@ -93,7 +137,7 @@ function init() {
         let value = document.createElement('div');
         base.classList.add('childPart');
         value.classList.add('inlineSvgIcon');
-        title.innerText = '英灵列表';
+        title.innerText = languageAssets.homePage.servantList;
         value.style.transform = 'translateY(-1px)';
         value.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--!Font Awesome Free 6.5.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2024 Fonticons, Inc.--><path d="M384 32c35.3 0 64 28.7 64 64V416c0 35.3-28.7 64-64 64H64c-35.3 0-64-28.7-64-64V96C0 60.7 28.7 32 64 32H384zM160 144c-13.3 0-24 10.7-24 24s10.7 24 24 24h94.1L119 327c-9.4 9.4-9.4 24.6 0 33.9s24.6 9.4 33.9 0l135-135V328c0 13.3 10.7 24 24 24s24-10.7 24-24V168c0-13.3-10.7-24-24-24H160z"/></svg>';
 
@@ -116,7 +160,7 @@ function init() {
             let value = document.createElement('div');
 
             base.classList.add('selectedCharacterList');
-            titleText.innerText = '已选择以下英灵';
+            titleText.innerText = languageAssets.toast.selectedServant;
             titleIcon.classList.add('inlineSvgIcon');
             titleIcon.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--!Font Awesome Free 6.5.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2024 Fonticons, Inc.--><path d="M416 208c0 45.9-14.9 88.3-40 122.7L502.6 457.4c12.5 12.5 12.5 32.8 0 45.3s-32.8 12.5-45.3 0L330.7 376c-34.4 25.2-76.8 40-122.7 40C93.1 416 0 322.9 0 208S93.1 0 208 0S416 93.1 416 208zM208 352a144 144 0 1 0 0-288 144 144 0 1 0 0 288z"/></svg>';
             title.appendChild(titleText);
@@ -124,7 +168,7 @@ function init() {
 
             titleIcon.addEventListener('click', () => {
                 if (selectedCharacter.length === 0) {
-                    createToast('至少需要选择一个英灵', 2540, '#FFF', '#414141', 'temp-search-loadingToast');
+                    createToast(languageAssets.toast.zeroSelected, 2540, '#FFF', '#414141', 'temp-search-loadingToast');
                     return;
                 }
                 let queryStr = '';
@@ -139,7 +183,7 @@ function init() {
                 doSearch(queryStr, 'things')
                     .then(r => {
                         if (r == 'NOT FOUND') {
-                            createToast('未找到符合条件的项目', 4300, '#FFF', '#840D23');
+                            createToast(languageAssets.toast.searchNotFound, 4300, '#FFF', '#840D23');
                         }
                     });
             });
@@ -236,7 +280,7 @@ function initAdmin() {
                                 createToast('密钥错误或权限不足', 4300, '#FFF', '#840D23');
                                 break;
                             case 'NOT FOUND':
-                                createToast('未找到符合条件的项目', 4300, '#FFF', '#840D23');
+                                createToast(languageAssets.toast.searchNotFound, 4300, '#FFF', '#840D23');
                                 break;
                             case 'SUCCESS':
                                 createToast('执行成功');
@@ -542,7 +586,7 @@ function initAdmin() {
                                     body: JSON.stringify(data)
                                 })
                                 .then(r => r.json());
-                                
+
                             switch (r.status) {
                                 case 'ACCESS DECLINE':
                                     createToast('密钥错误或权限不足', 4300, '#FFF', '#840D23');
@@ -603,7 +647,7 @@ async function openCharacterList() {
     (() => {
         function quickQuery() {
             if (selectedCharacter.length === 0) {
-                createToast('至少需要选择一个英灵', 2540, '#FFF', '#414141', 'temp-search-loadingToast');
+                createToast(languageAssets.toast.zeroSelected, 2540, '#FFF', '#414141', 'temp-search-loadingToast');
                 return;
             }
             let queryStr = '';
@@ -614,11 +658,11 @@ async function openCharacterList() {
                 }
                 queryStr += str;
             }
-            createToast('查询中', -1, '#FFF', '#414141', 'temp-search-loadingToast');
+            createToast(languageAssets.toast.querying, -1, '#FFF', '#414141', 'temp-search-loadingToast');
             doSearch(queryStr, 'things')
                 .then(r => {
                     if (r == 'NOT FOUND') {
-                        createToast('未找到符合条件的项目', 4300, '#FFF', '#840D23');
+                        createToast(languageAssets.toast.searchNotFound, 4300, '#FFF', '#840D23');
                     }
                 });
         }
@@ -1045,7 +1089,7 @@ async function doSearch(query = '1.1.1.1', type) {
         netCache.respondCache = r;
         netCache.lastStartsFrom = 0;
         sortByCache = 'coins';
-        createToast(`找到${netCache.respondCache.accounts.length}个结果`);
+        createToast(`${netCache.respondCache.accounts.length} ${languageAssets.toast.searchResultCount}`);
 
         if (type === 'coins') {
             writeInfo(r);
