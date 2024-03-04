@@ -1,10 +1,15 @@
 /*
     X-name:YAAS
     Cache-Control: no-cache
+    Link: </src/img/picList.json>; rel=preload
+    Link: </src/json/aliasList.json>; rel=preload
 /src/fonts/*
     ! Cache-Control
     Cache-Control:public, max-age=31536000
 /src/img/*
+    ! Cache-Control
+    Cache-Control:public, max-age=31536000
+/src/json/*
     ! Cache-Control
     Cache-Control:public, max-age=31536000
 https://:project.pages.dev/*
