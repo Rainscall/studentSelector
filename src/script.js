@@ -224,7 +224,7 @@ function init() {
 
             let picList;
             if (netCache.picList == null) {
-                picList = await fetch('src/img/picList.json').then(r => r.json());
+                picList = await fetch('src/json/picList.json').then(r => r.json());
                 netCache.picList = picList;
             } else {
                 picList = netCache.picList;
@@ -833,7 +833,7 @@ async function openCharacterList() {
 
     let picList;
     if (netCache.picList == null) {
-        picList = await fetch('src/img/picList.json').then(r => r.json());
+        picList = await fetch('src/json/picList.json').then(r => r.json());
         netCache.picList = picList;
     } else {
         picList = netCache.picList;
@@ -1026,7 +1026,7 @@ async function writeInfo(r, sortOrder = 'asc', sortBy = 'coins', maxPageSize = s
 
             let picList;
             if (netCache.picList == null) {
-                picList = await fetch('src/img/picList.json').then(r => r.json());
+                picList = await fetch('src/json/picList.json').then(r => r.json());
                 netCache.picList = picList;
             } else {
                 picList = netCache.picList;
