@@ -410,6 +410,44 @@ function initAdmin() {
             let value = document.createElement('div');
             base.classList.add('childPart');
             value.classList.add('inlineSvgIcon');
+            title.innerText = '清空缓存';
+            value.style.transform = 'translateY(-1px)';
+            value.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512"><!--!Font Awesome Free 6.5.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2024 Fonticons, Inc.--><path d="M290.7 57.4L57.4 290.7c-25 25-25 65.5 0 90.5l80 80c12 12 28.3 18.7 45.3 18.7H288h9.4H512c17.7 0 32-14.3 32-32s-14.3-32-32-32H387.9L518.6 285.3c25-25 25-65.5 0-90.5L381.3 57.4c-25-25-65.5-25-90.5 0zM297.4 416H288l-105.4 0-80-80L227.3 211.3 364.7 348.7 297.4 416z"/></svg>';
+
+            base.addEventListener('click', () => {
+                sendReq('true', 'flushCache')
+                    .then(r => {
+                        switch (r) {
+                            case 'ACCESS DECLINE':
+                                createToast('密钥错误或权限不足', 4300, '#FFF', '#840D23');
+                                break;
+                            case 'NOT FOUND':
+                                createToast(languageAssets.toast.searchNotFound, 4300, '#FFF', '#840D23');
+                                break;
+                            case 'SUCCESS':
+                                createToast('执行成功');
+                                input.value = '';
+                                break;
+                            case null: break;
+                            default:
+                                createToast('未知错误', 4300, '#FFF', '#840D23');
+                                break;
+                        }
+                    });
+            });
+
+            base.appendChild(title);
+            base.appendChild(value);
+            infoArea.appendChild(base);
+        })();
+
+        infoArea.appendChild(document.createElement('hr'));
+        (() => {
+            let base = document.createElement('div');
+            let title = document.createElement('div');
+            let value = document.createElement('div');
+            base.classList.add('childPart');
+            value.classList.add('inlineSvgIcon');
             title.innerText = '返回主页';
             value.style.transform = 'translateY(-1px)';
             value.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512"><!--!Font Awesome Free 6.5.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2024 Fonticons, Inc.--><path d="M575.8 255.5c0 18-15 32.1-32 32.1h-32l.7 160.2c0 2.7-.2 5.4-.5 8.1V472c0 22.1-17.9 40-40 40H456c-1.1 0-2.2 0-3.3-.1c-1.4 .1-2.8 .1-4.2 .1H416 392c-22.1 0-40-17.9-40-40V448 384c0-17.7-14.3-32-32-32H256c-17.7 0-32 14.3-32 32v64 24c0 22.1-17.9 40-40 40H160 128.1c-1.5 0-3-.1-4.5-.2c-1.2 .1-2.4 .2-3.6 .2H104c-22.1 0-40-17.9-40-40V360c0-.9 0-1.9 .1-2.8V287.6H32c-18 0-32-14-32-32.1c0-9 3-17 10-24L266.4 8c7-7 15-8 22-8s15 2 21 7L564.8 231.5c8 7 12 15 11 24z"/></svg>';
