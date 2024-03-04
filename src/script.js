@@ -646,6 +646,16 @@ function initAdmin() {
         const file = element.files[0];
         element.value = '';
 
+        if (file.size > 4 * 1024 * 1024) {
+            createToast('添加失败\n原因：文件超过4MiB', 4300, '#FFF', '#840D23');
+            return;
+        }
+
+        if (file.name.split('.').pop().toLowerCase() !== 'xlsx') {
+            createToast('添加失败\n原因：不是xlsx文件', 4300, '#FFF', '#840D23');
+            return;
+        }
+
         if (file) {
             const reader = new FileReader();
 
@@ -703,9 +713,7 @@ function initAdmin() {
                     createToast(`发生错误：\n${error}`, 4300, '#FFF', '#840D23');
                     return;
                 }
-
             };
-
             reader.readAsDataURL(file);
         } else {
             console.error('No file selected.');
