@@ -120,7 +120,9 @@ function init() {
             'step': 1,
             'min': 1
         }],
-        [languageAssets.homePage.search, languageAssets.homePage.searchPlaceholder, 'text', 'things']
+        [languageAssets.homePage.search, languageAssets.homePage.searchPlaceholder, 'text', 'things', {
+            'maxlength': '128'
+        }]
     ];
     for (let i = 0; i < infoList.length; i++) {
         let base = document.createElement('div');
