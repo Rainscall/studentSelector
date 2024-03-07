@@ -29,21 +29,25 @@ const i18nAssets = {
             'selectedServant': '已选择以下英灵',
             'noPrev': '到顶了',
             'noNext': '到底了',
-            'cleared': '清除完成'
+            'cleared': '清除完成',
+            'redirectedTo': '重定向至：',
+            'failedToQuery': '请求失败'
         },
         'toolbar': {
             'back': '返回',
             'search': '查询',
             'top': '顶部',
             'clear': '清空',
-            'sort': '排序',
-            'shop': '淘宝'
+            'sort': '排序'
         },
         'searchResult': {
             'id': '编号',
             'tickets': '呼符',
             'coins': '圣晶石',
-            'things': '英灵'
+            'things': '英灵',
+            'buy': '购买',
+            'infoCopied': '订单信息已复制，请发送给客服',
+            'copiedText': '我选择的ID为：'
         },
         'sortMenu': {
             'title': '排序方法',
@@ -74,21 +78,25 @@ const i18nAssets = {
             'selectedServant': 'Selected servant',
             'noPrev': 'This is the first page',
             'noNext': 'This is the last page',
-            'cleared': 'Cleared'
+            'cleared': 'Cleared',
+            'redirectedTo': 'Redirected to: ',
+            'failedToQuery': 'Request failed:'
         },
         'toolbar': {
             'back': 'Back',
             'search': 'Search',
             'top': 'Top',
             'clear': 'Clear',
-            'sort': 'Sort',
-            'shop': 'Shop'
+            'sort': 'Sort'
         },
         'searchResult': {
             'id': 'ID',
             'tickets': 'Summon Ticket',
             'coins': 'Saint Quartz',
-            'things': 'Servant'
+            'things': 'Servant',
+            'buy': 'Buy',
+            'infoCopied': 'Order information has been copied, please send to customer service',
+            'copiedText': 'I would like to buy ID: '
         },
         'sortMenu': {
             'title': 'Sort by...',
@@ -934,17 +942,6 @@ async function writeInfo(r, sortOrder = 'asc', sortBy = 'coins', maxPageSize = s
                 'callback': 'init'
             },
             {
-                'name': languageAssets.toolbar.shop,
-                'iconSvg': '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512"><!--!Font Awesome Free 6.5.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2024 Fonticons, Inc.--><path d="M253.3 35.1c6.1-11.8 1.5-26.3-10.2-32.4s-26.3-1.5-32.4 10.2L117.6 192H32c-17.7 0-32 14.3-32 32s14.3 32 32 32L83.9 463.5C91 492 116.6 512 146 512H430c29.4 0 55-20 62.1-48.5L544 256c17.7 0 32-14.3 32-32s-14.3-32-32-32H458.4L365.3 12.9C359.2 1.2 344.7-3.4 332.9 2.7s-16.3 20.6-10.2 32.4L404.3 192H171.7L253.3 35.1zM192 304v96c0 8.8-7.2 16-16 16s-16-7.2-16-16V304c0-8.8 7.2-16 16-16s16 7.2 16 16zm96-16c8.8 0 16 7.2 16 16v96c0 8.8-7.2 16-16 16s-16-7.2-16-16V304c0-8.8 7.2-16 16-16zm128 16v96c0 8.8-7.2 16-16 16s-16-7.2-16-16V304c0-8.8 7.2-16 16-16s16 7.2 16 16z"/></svg>',
-                'callback': (() => {
-                    if (/Android|iPhone|iPad|iPod|BlackBerry|webOS|Windows Phone|SymbianOS|IEMobile|Opera Mini/i.test(navigator.userAgent)) {
-                        window.open('taobao://shop100392721.taobao.com/', '_blank');
-                    } else {
-                        window.open('https://shop100392721.taobao.com/', '_blank');
-                    }
-                })
-            },
-            {
                 'name': languageAssets.toolbar.top,
                 'iconSvg': '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--!Font Awesome Free 6.5.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2024 Fonticons, Inc.--><path d="M246.6 41.4c-12.5-12.5-32.8-12.5-45.3 0l-160 160c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L224 109.3 361.4 246.6c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3l-160-160zm160 352l-160-160c-12.5-12.5-32.8-12.5-45.3 0l-160 160c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L224 301.3 361.4 438.6c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3z"/></svg>',
                 'callback': `(()=>{infoArea.children[0].scrollIntoView({behavior: "smooth"});
@@ -1129,9 +1126,47 @@ async function writeInfo(r, sortOrder = 'asc', sortBy = 'coins', maxPageSize = s
             base.appendChild(title);
             base.appendChild(value);
             container.appendChild(base);
-            if (i < Object.keys(infoList).length - 1) {
-                container.appendChild(document.createElement('hr'));
+            container.appendChild(document.createElement('hr'));
+            if (!(i < Object.keys(infoList).length - 1)) {
+                let base = document.createElement('div');
+                let title = document.createElement('div');
+
+                base.classList.add('childPart');
+                base.style.justifyContent = 'center';
+                base.style.backgroundColor = 'rgba(241, 241, 241, 0.774)';
+
+                title.innerText = languageAssets.searchResult.buy;
+                title.style.margin = '0';
+
+                base.addEventListener('click', () => {
+                    const textArea = document.createElement('textArea')
+                    textArea.value = `${languageAssets.searchResult.copiedText}${infoList.id}`;
+                    textArea.style.width = 0
+                    textArea.style.position = 'fixed'
+                    textArea.style.left = '-999px'
+                    textArea.style.top = '10px'
+                    textArea.setAttribute('readonly', 'readonly')
+                    document.body.appendChild(textArea)
+
+                    textArea.select()
+                    document.execCommand('copy')
+                    document.body.removeChild(textArea)
+
+                    createToast(`${languageAssets.searchResult.infoCopied}`, 1350);
+
+                    setTimeout(() => {
+                        if (/Android|iPhone|iPad|iPod|BlackBerry|webOS|Windows Phone|SymbianOS|IEMobile|Opera Mini/i.test(navigator.userAgent)) {
+                            window.open('taobao://shop100392721.taobao.com/', '_blank');
+                        } else {
+                            window.open('https://shop100392721.taobao.com/', '_blank');
+                        }
+                    }, 1350);
+                })
+
+                base.appendChild(title);
+                container.appendChild(base)
             }
+
         }
         infoArea.appendChild(container);
     }
@@ -1214,11 +1249,11 @@ async function doSearch(query = '1.1.1.1', type) {
                 }
             }
             if (showRedircted) {
-                createToast(`重定向至 ${query}`);
+                createToast(`${languageAssets.toast.redirectedTo} ${query}`);
             }
         } else if (await aliasToName(query) !== false) {
             query = await aliasToName(query);
-            createToast(`重定向至 ${query}`);
+            createToast(`${languageAssets.toast.redirectedTo} ${query}`);
         }
 
         const r = await fetch(`${apiEndpoint}/?${type}=${encodeURIComponent(query)}`).then(r => r.json());
@@ -1240,7 +1275,7 @@ async function doSearch(query = '1.1.1.1', type) {
 
     } catch (error) {
         removeElementsByClassName('temp-search-loadingToast');
-        createToast(`请求失败\n${error}`, 4300, '#FFF', '#840D23');
+        createToast(`${languageAssets.toast.failedToQuery}\n${error}`, 4300, '#FFF', '#840D23');
     }
 }
 
