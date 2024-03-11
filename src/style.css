@@ -156,6 +156,7 @@ hr {
     border: none;
     background: none;
     text-align: right;
+    scrollbar-width: none;
 }
 
 .bold {
@@ -240,6 +241,7 @@ hr {
     max-width: calc(100vw - 4rem);
     bottom: 0;
     z-index: 10;
+    scrollbar-width: none;
 }
 
 .fixedBack>div>div {
