@@ -96,7 +96,7 @@ const i18nAssets = {
             'coins': 'Saint Quartz',
             'things': 'Servant',
             'buy': 'Buy',
-            'infoCopied': 'Order information has been copied, please send to customer service',
+            'infoCopied': 'Order information has been copied, please send to sales representative',
             'copiedText': 'I would like to buy ID: ',
             'counterTip': 'The number of this Servant is: '
         },
