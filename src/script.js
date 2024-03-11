@@ -47,7 +47,8 @@ const i18nAssets = {
             'things': '英灵',
             'buy': '购买',
             'infoCopied': '订单信息已复制，请发送给客服',
-            'copiedText': '我选择的ID为：'
+            'copiedText': '我选择的ID为：',
+            'counterTip': '代表该英灵的数量为'
         },
         'sortMenu': {
             'title': '排序方法',
@@ -96,7 +97,8 @@ const i18nAssets = {
             'things': 'Servant',
             'buy': 'Buy',
             'infoCopied': 'Order information has been copied, please send to customer service',
-            'copiedText': 'I would like to buy ID: '
+            'copiedText': 'I would like to buy ID: ',
+            'counterTip': 'The number of this Servant is: '
         },
         'sortMenu': {
             'title': 'Sort by...',
@@ -1044,12 +1046,20 @@ async function writeInfo(r, sortOrder = 'asc', sortBy = 'coins', maxPageSize = s
                 picList = netCache.picList;
             }
 
+            if (currentKey != 'things') {
+                value.innerHTML = displayValue;
+            }
+
             switch (currentKey) {
                 case 'id': {
+                    let button = document.createElement('div');
+                    button.innerText = languageAssets.searchResult.buy;
+                    value.classList.add('searchResultId');
+                    value.appendChild(button);
+
                     base.addEventListener('click', () => {
-                        value.innerText = languageAssets.others.copied;
                         const textArea = document.createElement('textArea')
-                        textArea.value = value.dataset.value;
+                        textArea.value = `${languageAssets.searchResult.copiedText}${infoList.id}`;
                         textArea.style.width = 0
                         textArea.style.position = 'fixed'
                         textArea.style.left = '-999px'
@@ -1060,10 +1070,18 @@ async function writeInfo(r, sortOrder = 'asc', sortBy = 'coins', maxPageSize = s
                         textArea.select()
                         document.execCommand('copy')
                         document.body.removeChild(textArea)
+
+                        createToast(`${languageAssets.searchResult.infoCopied}`, 1350);
+
                         setTimeout(() => {
-                            value.innerText = value.dataset.value;
-                        }, 350)
+                            if (/Android|iPhone|iPad|iPod|BlackBerry|webOS|Windows Phone|SymbianOS|IEMobile|Opera Mini/i.test(navigator.userAgent)) {
+                                window.open('taobao://shop100392721.taobao.com/', '_blank');
+                            } else {
+                                window.open('https://market.m.taobao.com/app/im/chat/index.html?&uid=cntaobao%E9%98%BF%E8%8E%B9%E6%B7%98%E5%BA%97&gid=&type=web', '_blank');
+                            }
+                        }, 1350);
                     })
+
                     break;
                 }
                 case 'things': {
@@ -1095,7 +1113,7 @@ async function writeInfo(r, sortOrder = 'asc', sortBy = 'coins', maxPageSize = s
 
                             if (Object.values(characterCounter)[i] > 1) {
                                 counter.innerText = `${Object.values(characterCounter)[i]}`;
-                                counter.setAttribute('title', `代表该英灵有${Object.values(characterCounter)[i]}个`);
+                                counter.setAttribute('title', `${languageAssets.searchResult.counterTip}${Object.values(characterCounter)[i]}`);
                                 span.appendChild(counter);
                             }
 
@@ -1119,52 +1137,14 @@ async function writeInfo(r, sortOrder = 'asc', sortBy = 'coins', maxPageSize = s
                 }
             }
 
-            if (currentKey != 'things') {
-                value.innerHTML = displayValue;
-            }
+
 
             base.appendChild(title);
             base.appendChild(value);
             container.appendChild(base);
-            container.appendChild(document.createElement('hr'));
-            if (!(i < Object.keys(infoList).length - 1)) {
-                let base = document.createElement('div');
-                let title = document.createElement('div');
 
-                base.classList.add('childPart');
-                base.style.justifyContent = 'center';
-                base.style.backgroundColor = 'rgba(241, 241, 241, 0.774)';
-
-                title.innerText = languageAssets.searchResult.buy;
-                title.style.margin = '0';
-
-                base.addEventListener('click', () => {
-                    const textArea = document.createElement('textArea')
-                    textArea.value = `${languageAssets.searchResult.copiedText}${infoList.id}`;
-                    textArea.style.width = 0
-                    textArea.style.position = 'fixed'
-                    textArea.style.left = '-999px'
-                    textArea.style.top = '10px'
-                    textArea.setAttribute('readonly', 'readonly')
-                    document.body.appendChild(textArea)
-
-                    textArea.select()
-                    document.execCommand('copy')
-                    document.body.removeChild(textArea)
-
-                    createToast(`${languageAssets.searchResult.infoCopied}`, 1350);
-
-                    setTimeout(() => {
-                        if (/Android|iPhone|iPad|iPod|BlackBerry|webOS|Windows Phone|SymbianOS|IEMobile|Opera Mini/i.test(navigator.userAgent)) {
-                            window.open('taobao://shop100392721.taobao.com/', '_blank');
-                        } else {
-                            window.open('https://shop100392721.taobao.com/', '_blank');
-                        }
-                    }, 1350);
-                })
-
-                base.appendChild(title);
-                container.appendChild(base)
+            if (i < Object.keys(infoList).length - 1) {
+                container.appendChild(document.createElement('hr'));
             }
 
         }

@@ -481,6 +481,18 @@ hr {
     cursor: pointer;
 }
 
+.searchResultId {
+    display: flex;
+    gap: 0.625rem;
+    align-items: center;
+}
+
+.searchResultId>:last-child {
+    padding: 0.345rem;
+    background-color: rgba(241, 241, 241, 0.773);
+    border-radius: 0.6rem;
+}
+
 @media (prefers-color-scheme: dark) {
     .shadowBorder {
         box-shadow: 0 0px 45px -3px #fcfcfc1d;
@@ -533,6 +545,7 @@ hr {
         background-color: #181818;
     }
 
+    .searchResultId>:last-child,
     .selectedCharacterList> :last-child>div,
     .pageSwitcher>.inlineSvgIcon {
         background-color: #252525;
