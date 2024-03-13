@@ -1,5 +1,5 @@
 "use strict"
-const apiEndpoint = 'http://88.151.33.138:3000';
+const apiEndpoint = 'https://backend.fgopy.com';
 let selectedCharacter = [];
 let netCache = {
     respondCache: null,
