@@ -1123,6 +1123,13 @@ async function writeInfo(r, sortOrder = 'asc', sortBy = 'coins', maxPageSize = s
                                 img.classList.add('img');
                                 img.style.backgroundImage = `url('${picList[characterList[i]]}')`;
                                 base.appendChild(img);
+                                getAverageRGBFromURL(picList[characterList[i]]).then((rgbcolor) => {
+                                    rgbcolor = rgbToHsv(rgbcolor);
+                                    rgbcolor.v += 30;
+                                    rgbcolor = hsvToRgb(rgbcolor);
+
+                                    base.style.backgroundColor = `rgb(${rgbcolor.r},${rgbcolor.g},${rgbcolor.b})`;
+                                });
                             } else {
                                 span.style.marginLeft = '0';
                             }
@@ -1376,7 +1383,6 @@ function clearSelectedCharacter() {
 }
 
 function getAverageRGB(imgEl) {
-
     let blockSize = 5,
         // only visit every 5 pixels
         defaultRGB = {
@@ -1435,6 +1441,158 @@ function getAverageRGB(imgEl) {
 
     return rgb;
 }
+
+async function getAverageRGBFromURL(imgURL) {
+    let blockSize = 5,
+        // only visit every 5 pixels
+        defaultRGB = {
+            r: 255,
+            g: 255,
+            b: 255
+        },
+        // for non-supporting envs
+        canvas = document.createElement('canvas'),
+        context = canvas.getContext && canvas.getContext('2d', {
+            willReadFrequently: true,
+            alpha: false
+        }),
+        img = new Image();
+
+    img.crossOrigin = "Anonymous";
+    img.src = imgURL;
+
+    await new Promise((resolve, reject) => {
+        img.onload = resolve;
+        img.onerror = reject;
+    });
+
+    if (!context) {
+        return defaultRGB;
+    }
+
+    let height = canvas.height = img.naturalHeight || img.offsetHeight || img.height,
+        width = canvas.width = img.naturalWidth || img.offsetWidth || img.width;
+
+    context.drawImage(img, 0, 0, width, height);
+
+    let data;
+
+    try {
+        data = context.getImageData(0, 0, width, height);
+    } catch (e) {
+        /* security error, img on diff domain */
+        return defaultRGB;
+    }
+
+    let length = data.data.length,
+        i = -4,
+        rgb = {
+            r: 0,
+            g: 0,
+            b: 0
+        },
+        count = 0;
+
+    while ((i += blockSize * 4) < length) {
+        ++count;
+        rgb.r += data.data[i];
+        rgb.g += data.data[i + 1];
+        rgb.b += data.data[i + 2];
+    }
+
+    // ~~ used to floor values
+    rgb.r = ~~(rgb.r / count);
+    rgb.g = ~~(rgb.g / count);
+    rgb.b = ~~(rgb.b / count);
+
+    return rgb;
+}
+
+function rgbToHsv(rgb) {
+    const r = rgb.r / 255;
+    const g = rgb.g / 255;
+    const b = rgb.b / 255;
+
+    const max = Math.max(r, g, b);
+    const min = Math.min(r, g, b);
+    const delta = max - min;
+
+    let h, s, v;
+
+    if (delta === 0) {
+        h = 0;
+    } else if (max === r) {
+        h = ((g - b) / delta) % 6;
+    } else if (max === g) {
+        h = (b - r) / delta + 2;
+    } else {
+        h = (r - g) / delta + 4;
+    }
+
+    h = Math.round(h * 60);
+    if (h < 0) {
+        h += 360;
+    }
+
+    s = max === 0 ? 0 : Math.round((delta / max) * 100);
+    v = Math.round(max * 100);
+
+    return { h, s, v };
+}
+
+function hsvToRgb(hsv) {
+    const h = hsv.h / 360;
+    const s = hsv.s / 100;
+    const v = hsv.v / 100;
+
+    let r, g, b;
+
+    const i = Math.floor(h * 6);
+    const f = h * 6 - i;
+    const p = v * (1 - s);
+    const q = v * (1 - f * s);
+    const t = v * (1 - (1 - f) * s);
+
+    switch (i % 6) {
+        case 0:
+            r = v;
+            g = t;
+            b = p;
+            break;
+        case 1:
+            r = q;
+            g = v;
+            b = p;
+            break;
+        case 2:
+            r = p;
+            g = v;
+            b = t;
+            break;
+        case 3:
+            r = p;
+            g = q;
+            b = v;
+            break;
+        case 4:
+            r = t;
+            g = p;
+            b = v;
+            break;
+        case 5:
+            r = v;
+            g = p;
+            b = q;
+            break;
+    }
+
+    return {
+        r: Math.round(r * 255),
+        g: Math.round(g * 255),
+        b: Math.round(b * 255)
+    };
+}
+
 
 /**
  * 根据外号查找对应大名
