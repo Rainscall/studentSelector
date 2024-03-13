@@ -486,6 +486,10 @@ hr {
     gap: 0.1rem;
 }
 
+.pageSwitcher>.pageNumber>:nth-child(2) {
+    transform: translateY(2px);
+}
+
 .pageSwitcher>.pageNumber>:nth-child(2) svg path {
     fill: #b2b2b2;
 }
