@@ -1125,11 +1125,30 @@ async function writeInfo(r, sortOrder = 'asc', sortBy = 'coins', maxPageSize = s
                                 base.appendChild(img);
                                 getAverageRGBFromURL(picList[characterList[i]]).then((rgbcolor) => {
                                     rgbcolor = rgbToHsv(rgbcolor);
-                                    rgbcolor.v += 30;
+                                    rgbcolor.s -= 5;
+                                    rgbcolor.v = 95;
+                                    if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+                                        rgbcolor.v = 20;
+                                    }
                                     rgbcolor = hsvToRgb(rgbcolor);
 
                                     base.style.backgroundColor = `rgb(${rgbcolor.r},${rgbcolor.g},${rgbcolor.b})`;
                                 });
+
+                                window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', (e) => {
+                                    getAverageRGBFromURL(picList[characterList[i]]).then((rgbcolor) => {
+                                        rgbcolor = rgbToHsv(rgbcolor);
+                                        rgbcolor.s -= 5;
+                                        rgbcolor.v = 95;
+                                        if (e.matches) {
+                                            rgbcolor.v = 20;
+                                        }
+                                        rgbcolor = hsvToRgb(rgbcolor);
+
+                                        base.style.backgroundColor = `rgb(${rgbcolor.r},${rgbcolor.g},${rgbcolor.b})`;
+                                    });
+                                });
+
                             } else {
                                 span.style.marginLeft = '0';
                             }
@@ -1144,8 +1163,6 @@ async function writeInfo(r, sortOrder = 'asc', sortBy = 'coins', maxPageSize = s
                     break;
                 }
             }
-
-
 
             base.appendChild(title);
             base.appendChild(value);
