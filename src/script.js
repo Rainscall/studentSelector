@@ -1,5 +1,5 @@
 "use strict"
-const apiEndpoint = 'https://backend.fgopy.com';
+const apiEndpoint = 'http://88.151.33.138:3000';
 let selectedCharacter = [];
 let netCache = {
     respondCache: null,
@@ -717,8 +717,8 @@ function initAdmin() {
                                 case 'ACCESS DECLINE':
                                     createToast('密钥错误或权限不足', 4300, '#FFF', '#840D23');
                                     break;
-                                case 'FOUND THE SAME ID':
-                                    createToast('添加失败\n原因：检测到ID重复', 4300, '#FFF', '#840D23');
+                                case 'FOUND THE SAME RECORD':
+                                    createToast('添加失败\n原因：检测到重复的记录', 4300, '#FFF', '#840D23');
                                     break;
                                 case 'SUCCESS':
                                     createToast('执行成功');
