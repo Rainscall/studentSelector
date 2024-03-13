@@ -990,6 +990,7 @@ async function writeInfo(r, sortOrder = 'asc', sortBy = 'coins', maxPageSize = s
     })();
 
     r.accounts = sortByItems(r.accounts, sortBy, sortOrder);
+    netCache.pageCache = [];
 
     if (startsFrom + maxPageSize > r.accounts.length) {
         maxPageSize = r.accounts.length - startsFrom;
@@ -1169,7 +1170,7 @@ async function writeInfo(r, sortOrder = 'asc', sortBy = 'coins', maxPageSize = s
         const infoArea = document.getElementById('infoArea');
         let switcher = document.createElement('div');
         let base = document.createElement('div');
-        const functionList = {
+        let functionList = {
             'prev': {
                 'svgIcon': '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 512"><!--!Font Awesome Free 6.5.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2024 Fonticons, Inc.--><path d="M9.4 278.6c-12.5-12.5-12.5-32.8 0-45.3l128-128c9.2-9.2 22.9-11.9 34.9-6.9s19.8 16.6 19.8 29.6l0 256c0 12.9-7.8 24.6-19.8 29.6s-25.7 2.2-34.9-6.9l-128-128z"/></svg>',
                 'callback': `(() => { changePage('prev') })`
@@ -1178,21 +1179,49 @@ async function writeInfo(r, sortOrder = 'asc', sortBy = 'coins', maxPageSize = s
                 'svgIcon': '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 512"><!--!Font Awesome Free 6.5.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2024 Fonticons, Inc.--><path d="M246.6 278.6c12.5-12.5 12.5-32.8 0-45.3l-128-128c-9.2-9.2-22.9-11.9-34.9-6.9s-19.8 16.6-19.8 29.6l0 256c0 12.9 7.8 24.6 19.8 29.6s25.7 2.2 34.9-6.9l128-128z"/></svg>',
                 'callback': `(() => { changePage('next') })`
             }
-        }
+        };
+
         switcher.classList.add('infoContainer');
         switcher.classList.add('pageSwitcherBase');
         base.classList.add('pageSwitcher');
         base.classList.add('shadowBorder');
 
-        for (let i = 0; i < Object.keys(functionList).length; i++) {
+        function createArrow(action) {
             let icon = document.createElement('div');
             icon.classList.add('inlineSvgIcon');
             icon.classList.add('curPtr');
-            icon.innerHTML = Object.values(functionList)[i].svgIcon;
+            icon.innerHTML = functionList[action].svgIcon;
 
-            icon.addEventListener('click', eval(Object.values(functionList)[i].callback));
+            icon.addEventListener('click', eval(functionList[action].callback));
             base.appendChild(icon);
         }
+
+        createArrow('prev');
+
+        (() => {
+            let icon = document.createElement('div');
+            let from = document.createElement('span');
+            let to = document.createElement('span');
+            let toWord = document.createElement('span');
+
+            icon.classList.add('curPtr');
+            icon.classList.add('pageNumber');
+
+            from.innerText = netCache.lastStartsFrom + 1;
+            to.innerText = netCache.lastStartsFrom + netCache.pageCache.length;
+            toWord.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--!Font Awesome Free 6.5.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2024 Fonticons, Inc.--><path d="M470.6 278.6c12.5-12.5 12.5-32.8 0-45.3l-160-160c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3L402.7 256 265.4 393.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0l160-160zm-352 160l160-160c12.5-12.5 12.5-32.8 0-45.3l-160-160c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3L210.7 256 73.4 393.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0z"/></svg>';
+
+            toWord.classList.add('inlineSvgIcon');
+
+            icon.appendChild(from);
+            icon.appendChild(toWord);
+            icon.appendChild(to);
+
+
+            base.appendChild(icon);
+        })();
+
+        createArrow('next');
 
         switcher.appendChild(base);
         infoArea.appendChild(switcher);

@@ -468,6 +468,7 @@ hr {
     border-radius: 1rem;
 }
 
+.pageSwitcher>.pageNumber,
 .pageSwitcher>.inlineSvgIcon {
     display: flex;
     justify-content: center;
@@ -475,6 +476,18 @@ hr {
     margin: 0.2rem;
     border-radius: 0.5rem;
     padding: 0.35rem;
+}
+
+.pageSwitcher>.pageNumber {
+    font-size: small;
+    color: #4b4b4b;
+    user-select: none;
+    display: flex;
+    gap: 0.1rem;
+}
+
+.pageSwitcher>.pageNumber>:nth-child(2) svg path {
+    fill: #b2b2b2;
 }
 
 .curPtr {
@@ -545,9 +558,19 @@ hr {
         background-color: #181818;
     }
 
+    .pageSwitcher>.pageNumber,
     .searchResultId>:last-child,
     .selectedCharacterList> :last-child>div,
     .pageSwitcher>.inlineSvgIcon {
         background-color: #252525;
     }
+
+    .pageSwitcher>.pageNumber {
+        color: #e5e5e5;
+    }
+
+    .pageSwitcher>.pageNumber>:nth-child(2) svg path {
+        fill: #4d4d4d;
+    }
+
 }
