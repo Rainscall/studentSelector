@@ -1125,8 +1125,20 @@ async function writeInfo(r, sortOrder = 'asc', sortBy = 'coins', maxPageSize = s
                                 base.appendChild(img);
                                 getAverageRGBFromURL(picList[characterList[i]]).then((rgbcolor) => {
                                     rgbcolor = rgbToHsv(rgbcolor);
-                                    rgbcolor.s -= 5;
-                                    rgbcolor.v = 95;
+                                    rgbcolor.s -= 25;
+
+                                    if (rgbcolor.s < 5) {
+                                        rgbcolor.s = 5;
+                                    }
+
+                                    if (rgbcolor.v < 95) {
+                                        rgbcolor.v = 95;
+                                    }
+
+                                    if (rgbcolor.v > 110) {
+                                        rgbcolor.v = 110;
+                                    }
+
                                     if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
                                         rgbcolor.v = 20;
                                     }
@@ -1138,11 +1150,30 @@ async function writeInfo(r, sortOrder = 'asc', sortBy = 'coins', maxPageSize = s
                                 window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', (e) => {
                                     getAverageRGBFromURL(picList[characterList[i]]).then((rgbcolor) => {
                                         rgbcolor = rgbToHsv(rgbcolor);
-                                        rgbcolor.s -= 5;
-                                        rgbcolor.v = 95;
+
                                         if (e.matches) {
+                                            rgbcolor.s -= 5;
                                             rgbcolor.v = 20;
+                                        } else {
+                                            rgbcolor.s -= 25;
+
+                                            if (rgbcolor.s < 5) {
+                                                rgbcolor.s = 5;
+                                            }
+
+                                            if (rgbcolor.v < 95) {
+                                                rgbcolor.v = 95;
+                                            }
+
+                                            if (rgbcolor.v > 110) {
+                                                rgbcolor.v = 110;
+                                            }
+
+                                            if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+                                                rgbcolor.v = 20;
+                                            }
                                         }
+
                                         rgbcolor = hsvToRgb(rgbcolor);
 
                                         base.style.backgroundColor = `rgb(${rgbcolor.r},${rgbcolor.g},${rgbcolor.b})`;
