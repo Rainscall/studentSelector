@@ -6,9 +6,11 @@ let netCache = {
     pageCache: [],
     lastStartsFrom: 0,
     picList: null,
-    aliasList: null
+    aliasList: null,
+    sortByCache: '',
+    sortBy: 'asc'
 };
-let sortByCache = '';
+
 const stepLength = 25;
 
 const i18nAssets = {
@@ -54,7 +56,9 @@ const i18nAssets = {
             'title': '排序方法',
             'coins': '圣晶石',
             'tickets': '呼符',
-            'id': '编号'
+            'id': '编号',
+            'sortByAsc': '由小到大',
+            'sortByDesc': '由大到小'
         },
         'others': {
             'copied': '已复制',
@@ -104,7 +108,9 @@ const i18nAssets = {
             'title': 'Sort by...',
             'coins': 'Saint Quartz',
             'tickets': 'Summon Ticket',
-            'id': 'ID'
+            'id': 'ID',
+            'sortByAsc': 'Positive sorting',
+            'sortByDesc': 'Sort in reverse order'
         },
         'others': {
             'copied': 'Copied',
@@ -123,7 +129,7 @@ if (navigator.language.startsWith('zh')) {
 
 function init() {
     removeElementsByClassName('tempElement');
-    sortByCache = '';
+    netCache.sortByCache = '';
     netCache.respondCache = '';
     infoArea.classList.add('shadowBorder');
     infoArea.innerHTML = '';
@@ -928,7 +934,7 @@ async function openCharacterList() {
  */
 async function writeInfo(r, sortOrder = 'asc', sortBy = 'coins', maxPageSize = stepLength, startsFrom = 0) {
     if (startsFrom >= r.accounts.length) {
-        createToast(languageAssets.toast.noNext);
+        // createToast(languageAssets.toast.noNext);
         netCache.lastStartsFrom -= stepLength;
         return;
     }
@@ -1211,7 +1217,7 @@ async function writeInfo(r, sortOrder = 'asc', sortBy = 'coins', maxPageSize = s
         function changePage(action) {
             if (action === 'prev') {
                 if (netCache.lastStartsFrom === 0) {
-                    createToast(languageAssets.toast.noPrev);
+                    // createToast(languageAssets.toast.noPrev);
                     return;
                 }
                 netCache.lastStartsFrom -= stepLength;
@@ -1251,7 +1257,9 @@ async function writeInfo(r, sortOrder = 'asc', sortBy = 'coins', maxPageSize = s
             base.appendChild(icon);
         }
 
-        createArrow('prev');
+        if (netCache.lastStartsFrom != 0) {
+            createArrow('prev');
+        }
 
         (() => {
             let icon = document.createElement('div');
@@ -1276,7 +1284,9 @@ async function writeInfo(r, sortOrder = 'asc', sortBy = 'coins', maxPageSize = s
             base.appendChild(icon);
         })();
 
-        createArrow('next');
+        if (netCache.lastStartsFrom + stepLength < netCache.respondCache.accounts.length) {
+            createArrow('next');
+        }
 
         switcher.appendChild(base);
         infoArea.appendChild(switcher);
@@ -1328,7 +1338,7 @@ async function doSearch(query = '1.1.1.1', type) {
 
         netCache.respondCache = r;
         netCache.lastStartsFrom = 0;
-        sortByCache = 'coins';
+        netCache.sortByCache = 'coins';
         createToast(`${netCache.respondCache.accounts.length} ${languageAssets.toast.searchResultCount}`);
 
         if (type === 'coins') {
@@ -1731,25 +1741,49 @@ function openSortMenu() {
         });
     }
 
-    if (!sortByCache) {
+    if (!netCache.sortByCache) {
         selectorContainer.children[0].click();
     } else {
         for (let i = 0; i < selectorContainer.children.length; i++) {
-            if (method[selectorContainer.children[i].children[1].dataset.value] === sortByCache) {
+            if (method[selectorContainer.children[i].children[1].dataset.value] === netCache.sortByCache) {
                 selectorContainer.children[i].click();
             }
         }
     }
+
+    let sortBy = netCache.sortBy;
+    (() => {
+        let base = document.createElement('div');
+
+        if (sortBy == 'desc') {
+            base.innerText = languageAssets.sortMenu.sortByDesc;
+        } else {
+            base.innerText = languageAssets.sortMenu.sortByAsc;
+        }
+
+        base.addEventListener('click', () => {
+            if (sortBy === 'asc') {
+                base.innerText = languageAssets.sortMenu.sortByDesc;
+                sortBy = 'desc';
+            } else {
+                base.innerText = languageAssets.sortMenu.sortByAsc;
+                sortBy = 'asc';
+            }
+        })
+
+        selectorContainer.appendChild(base);
+    })();
 
     title.innerText = languageAssets.sortMenu.title;
     apply.innerText = languageAssets.others.confirm;
 
     apply.addEventListener('click', () => {
         let selected = method[document.querySelector('.selectorContainer>.selected>label').dataset.value];
-        if (sortByCache != selected) {
-            sortByCache = selected;
+        if (netCache.sortByCache != selected || netCache.sortBy != sortBy) {
+            netCache.sortByCache = selected;
             netCache.lastStartsFrom = 0;
-            writeInfo(netCache.respondCache, 'desc', selected);
+            netCache.sortBy = sortBy;
+            writeInfo(netCache.respondCache, sortBy, selected);
         }
         dialog.close();
         dialog.remove();
