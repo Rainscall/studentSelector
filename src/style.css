@@ -273,7 +273,7 @@ hr {
     flex-direction: row;
     align-items: center;
     justify-content: left;
-    padding: 0.525rem;
+    padding: 0.425rem;
     margin: 0.25rem;
     width: fit-content;
     height: fit-content;
@@ -309,6 +309,7 @@ hr {
     display: flex;
     justify-content: center;
     align-items: center;
+    font-size: 0.85em;
 }
 
 .selectedCharacterList> :last-child>div :last-child :last-child {

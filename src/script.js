@@ -769,7 +769,6 @@ window.addEventListener('hashchange', function () {
     }
 });
 
-
 async function openCharacterList() {
     infoArea.classList.remove('shadowBorder');
     infoArea.innerHTML = '';
@@ -996,6 +995,7 @@ async function writeInfo(r, sortOrder = 'asc', sortBy = 'coins', maxPageSize = s
     })();
 
     r.accounts = sortByItems(r.accounts, sortBy, sortOrder);
+    netCache.sortBy = sortOrder;
     netCache.pageCache = [];
 
     if (startsFrom + maxPageSize > r.accounts.length) {
