@@ -885,12 +885,91 @@ async function openCharacterList() {
             title.innerText = currentKey;
         }
 
+        title.style.setProperty('--fontColor', '#000');
+
         value.dataset.value = Object.values(infoList)[i];
         pic.src = Object.values(infoList)[i];
 
         pic.addEventListener('load', () => {
             let rgbcolor = getAverageRGB(pic);
+
+            rgbcolor = rgbToHsv(rgbcolor);
+            rgbcolor.s -= 15;
+
+            if (rgbcolor.s < 5) {
+                rgbcolor.s = 5;
+            }
+
+            if (rgbcolor.v < 85) {
+                rgbcolor.v = 85;
+            }
+
+            if (rgbcolor.v > 100) {
+                rgbcolor.v = 100;
+            }
+
+            let fontColor = rgbcolor;
+
+            if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+                rgbcolor.v = 20;
+            }
+
+            rgbcolor = hsvToRgb(rgbcolor);
+
             base.parentNode.style.backgroundColor = `rgb(${rgbcolor.r},${rgbcolor.g},${rgbcolor.b})`;
+
+            fontColor.v -= 56;
+            fontColor.s += 90;
+
+            if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+                fontColor.s = 35;
+                fontColor.v = 90;
+            }
+
+            fontColor = hsvToRgb(fontColor);
+
+            title.style.setProperty('--fontColor', `rgb(${fontColor.r},${fontColor.g},${fontColor.b})`)
+
+            window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', (e) => {
+                let rgbcolor = getAverageRGB(pic);
+                rgbcolor = rgbToHsv(rgbcolor);
+                rgbcolor.s -= 15;
+
+                if (rgbcolor.s < 5) {
+                    rgbcolor.s = 5;
+                }
+
+                if (rgbcolor.v < 85) {
+                    rgbcolor.v = 85;
+                }
+
+                if (rgbcolor.v > 100) {
+                    rgbcolor.v = 100;
+                }
+
+                let fontColor = rgbcolor;
+
+                if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+                    rgbcolor.v = 20;
+                }
+
+                rgbcolor = hsvToRgb(rgbcolor);
+
+                base.parentNode.style.backgroundColor = `rgb(${rgbcolor.r},${rgbcolor.g},${rgbcolor.b})`;
+
+                fontColor.v -= 56;
+                fontColor.s += 90;
+
+                if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+                    fontColor.s = 35;
+                    fontColor.v = 90;
+                }
+
+                fontColor = hsvToRgb(fontColor);
+
+                title.style.setProperty('--fontColor', `rgb(${fontColor.r},${fontColor.g},${fontColor.b})`)
+
+            });
         })
 
         base.addEventListener('click', () => {
