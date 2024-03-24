@@ -203,7 +203,7 @@ hr {
 
 /* 角色卡片小标题 */
 .characterItem .childPart :nth-child(1) :nth-child(2) {
-    color: #606060;
+    color: var(--fontColor);
     width: fit-content;
     margin-top: 0.3rem;
 }
@@ -523,11 +523,19 @@ hr {
         color: #cb3c56;
     }
 
-    .characterItem .selected,
     #infoArea .childPart:has(input:valid),
     #infoArea .childPart:hover {
+        background-color: rgba(10, 10, 10, 0.674);
+    }
+
+    .characterItem .selected {
         background-color: rgba(10, 10, 10, 0.674) !important;
     }
+
+    .characterItem .selected:hover {
+        background-color: rgba(10, 10, 10, 0.674) !important;
+    }
+
 
     .inlineSvgIcon svg path {
         fill: #fff;

@@ -929,6 +929,10 @@ async function openCharacterList() {
             fontColor = hsvToRgb(fontColor);
 
             title.style.setProperty('--fontColor', `rgb(${fontColor.r},${fontColor.g},${fontColor.b})`)
+            if (subtitle.innerText.length > 0) {
+                subtitle.style.setProperty('--fontColor', `rgb(${fontColor.r},${fontColor.g},${fontColor.b})`);
+            }
+
 
             window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', (e) => {
                 let rgbcolor = getAverageRGB(pic);
@@ -968,7 +972,9 @@ async function openCharacterList() {
                 fontColor = hsvToRgb(fontColor);
 
                 title.style.setProperty('--fontColor', `rgb(${fontColor.r},${fontColor.g},${fontColor.b})`)
-
+                if (subtitle.innerText.length > 0) {
+                    subtitle.style.setProperty('--fontColor', `rgb(${fontColor.r},${fontColor.g},${fontColor.b})`);
+                }
             });
         })
 
