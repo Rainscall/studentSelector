@@ -305,10 +305,12 @@ function init() {
 
 function initAdmin() {
     function init() {
-        removeElementsByClassName('tempElement');
-        infoArea.classList.add('shadowBorder');
-        infoArea.innerHTML = '';
-        const infoList = [
+        if (!localStorage.getItem('accessToken')) {
+            auth();
+            return;
+        }
+
+        let infoList = [
             ['访问密钥', 'token', 'text', '', {
                 'id': 'accessTokenInput',
                 'autocomplete': 'off'
@@ -318,6 +320,9 @@ function initAdmin() {
                 'min': 1
             }]
         ];
+        removeElementsByClassName('tempElement');
+        infoArea.classList.add('shadowBorder');
+        infoArea.innerHTML = '';
         for (let i = 0; i < infoList.length; i++) {
             let base = document.createElement('div');
             let title = document.createElement('div');
@@ -750,6 +755,60 @@ function initAdmin() {
         }
     }
 
+    function auth() {
+        let infoList = [
+            ['访问密钥', 'token', 'text', '', {
+                'id': 'accessTokenInput',
+                'autocomplete': 'off'
+            }]
+        ];
+        removeElementsByClassName('tempElement');
+        infoArea.classList.add('shadowBorder');
+        infoArea.innerHTML = '';
+        for (let i = 0; i < infoList.length; i++) {
+            let base = document.createElement('div');
+            let title = document.createElement('div');
+            let value = document.createElement('div');
+            let form = document.createElement('form');
+            let input = document.createElement('input');
+            base.classList.add('childPart');
+            base.style.cursor = 'text';
+            title.innerText = infoList[i][0];
+
+            input.placeholder = infoList[i][1];
+            input.type = infoList[i][2];
+            input.required = 'required';
+
+            if (typeof infoList[i][4] == 'object') {
+                for (let j = 0; j < Object.keys(infoList[i][4]).length; j++) {
+                    const currentKey = Object.keys(infoList[i][4])[j];
+                    const currentValue = Object.values(infoList[i][4])[j];
+                    input.setAttribute(currentKey, currentValue);
+                }
+            }
+
+            base.addEventListener('click', () => {
+                input.focus();
+            });
+
+            form.onsubmit = (e) => {
+                e.preventDefault();
+                if (!input.value) {
+                    return;
+                }
+                localStorage.setItem('accessToken', input.value);
+                init();
+                return;
+            }
+
+            form.appendChild(input);
+            value.appendChild(form);
+            base.appendChild(title);
+            base.appendChild(value);
+            infoArea.appendChild(base);
+        }
+
+    }
 }
 
 //首次打开时判断hashtag
